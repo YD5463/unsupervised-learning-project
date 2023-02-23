@@ -24,11 +24,11 @@ Path(CACHE_PATH).mkdir(parents=True, exist_ok=True)
 data_path = "../data/fma_metadata"
 features = pd.read_csv(os.path.join(data_path, "features.csv"), index_col=0, header=[0, 1, 2])
 tracks = pd.read_csv(os.path.join(data_path, "tracks.csv"), index_col=0, header=[0, 1])
-dimentions_options = [10, 50]
+dimentions_options = [10, 50, 200]
 num_clusters_options = list(range(2, 20, 10))
 num_of_cvs = 5
 cv_size = 100
-p_value_thr = 0.05
+p_value_thr = 0.0005
 external_vars = [('track', 'genre_top'), ('track', 'license'), ('album', 'type')]
 
 
@@ -58,7 +58,7 @@ def reduction_algo_wrapper(reduction_algo_name: str, dim_num: int, cv_data: np.n
         return cv_data
     cache_file = os.path.join(CACHE_PATH, f"{reduction_algo_name}-{dim_num}-{cv_id}.pkl")
     if Path(cache_file).is_file():
-        print(f"using cache file {cache_file}")
+        # print(f"using cache file {cache_file}")
         with open(cache_file, "rb") as file:
             return pickle.load(file)
     cv_data = reduction_algo(dim_num).fit_transform(cv_data)
@@ -78,10 +78,14 @@ def main_flow(X_cvs: List[np.ndarray]) -> Dict[str, Dict[str, Any]]:
                 for k_clusters in num_clusters_options:
                     scores = []
                     for cv_id, cv_data in enumerate(X_cvs):
-                        cv_data = reduction_algo_wrapper(reduction_algo_name,dim_num,cv_data, cv_id)
-                        print(f"doing {clustering_algo_name} for {cv_data.shape} by {reduction_algo_name}")
-                        labels = clustering_algo(k_clusters, cv_data)
-                        scores.append(silhouette_score(cv_data, labels))
+                        try:
+                            cv_data = reduction_algo_wrapper(reduction_algo_name,dim_num,cv_data, cv_id)
+                            print(f"doing {clustering_algo_name} for {cv_data.shape} by {reduction_algo_name}")
+                            labels = clustering_algo(k_clusters, cv_data)
+                            scores.append(silhouette_score(cv_data, labels))
+                        except Exception as e:
+                            print(e)
+                            scores.append(-1)
                     curr_score = np.mean(scores)
                     if curr_score > max_score:
                         max_score = curr_score

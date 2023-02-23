@@ -2,6 +2,7 @@ import json
 import os
 import pandas as pd
 import networkx as nx
+from collections import defaultdict
 
 
 def load_dynamic_dataset(data_path="data/driftdataset"):
@@ -17,6 +18,15 @@ def load_dynamic_dataset(data_path="data/driftdataset"):
             )
             dfs.append(df)
     return pd.concat(dfs, axis=0)
+    # time_series = defaultdict(list)
+    # for i, row in tqdm(df.iterrows()):
+    #     time_val = row["TIME"].split(";")
+    #     XGSM_val = row["XGSM"].split(":")
+    #     time_series[time_val[0]].append({
+    #         "time": time_val[1],
+    #         "gas_density": XGSM_val[1]
+    #     })
+    # print(sorted(list(time_series.keys())))
 
 
 def load_graph_dataset(data_path="data/deezer_ego_nets"):

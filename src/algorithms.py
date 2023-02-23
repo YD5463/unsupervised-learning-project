@@ -1,4 +1,6 @@
 import numpy as np
+from keras import Model, Input
+from keras.legacy_tf_layers.core import Dense
 from matplotlib import pyplot as plt
 from sklearn.decomposition import PCA, FastICA
 from sklearn.metrics import silhouette_score
@@ -90,16 +92,37 @@ clustering_algorithms = {
     "fuzzy_c_means": fuzzy_c_means,
     "gaussian_mixture": gaussian_mixture,
     "hierarchical_clustering": hierarchical_clustering,
-    # "birch": birch,
-    # "spectral_clustering": spectral_clustering,
-    # "hierarchical_dbscan": hierarchical_dbscan,
+    "birch": birch,
+    "spectral_clustering": spectral_clustering,
+    "hierarchical_dbscan": hierarchical_dbscan,
 }
 
+
+# def autoencoder_dim_reduction():
+#     input_img = Input(shape=(img.width,))
+#     encoded1 = Dense(128, activation='relu')(input_img)
+#     encoded2 = Dense(reduced_pixel, activation='relu')(encoded1)
+#     decoded1 = Dense(128, activation='relu')(encoded2)
+#     decoded2 = Dense(img.width, activation=None)(decoded1)
+#     autoencoder = Model(input_img, decoded2)
+#     autoencoder.compile(optimizer='adadelta', loss='mean_squared_error')
+#     autoencoder.fit(X, X,
+#                     epochs=500,
+#                     batch_size=16,
+#                     shuffle=True)
+#     # Encoder
+#     encoder = Model(input_img, encoded2)
+#     # Decoder
+#     decoder = Model(input_img, decoded2)
+#     encoded_imgs = encoder.predict(X)
+#     decoded_imgs = decoder.predict(X)
+
+
 dim_reduction_algorithms = {
-    # "TSNE": lambda k: TSNE(n_components=k, method="exact"),
-    # "Isomap": lambda k: Isomap(n_components=k),
-    # "MDS": lambda k: MDS(n_components=k),
-    # "SpectralEmbedding": lambda k: SpectralEmbedding(n_components=k),
+    "TSNE": lambda k: TSNE(n_components=k, method="exact", init="random"),
+    "Isomap": lambda k: Isomap(n_components=k),
+    "MDS": lambda k: MDS(n_components=k),
+    "SpectralEmbedding": lambda k: SpectralEmbedding(n_components=k),
     "PCA": lambda k: PCA(n_components=k),
     "FastICA": lambda k: FastICA(n_components=k),
     "without_reduction": None
