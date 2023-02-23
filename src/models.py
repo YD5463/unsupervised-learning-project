@@ -118,9 +118,6 @@ def main_flow(X_cvs: List[np.ndarray]) -> Dict[str, Dict[str, Any]]:
         else:
             print(f"followed by annova: algorithms {dim_reduction_scores.keys()} are the same")
         print(f"picking for {clustering_algo_name}: {best_config_by_clustering[clustering_algo_name]}")
-        with open(f"{OUTPUT_PATH}/best_config_by_clustering.json", "w") as file:
-            json.dump(best_config_by_clustering, file)
-    print(best_config_by_clustering)
     return best_config_by_clustering
 
 
@@ -133,13 +130,17 @@ def second_flow(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame], best_config_
             scores = []
             best_config = best_config_by_clustering[clustering_algo_name]
             for cv_id, (cv_data, cv_y_true) in enumerate(zip(X_cvs, y_cvs)):
-                cv_data = reduction_algo_wrapper(
-                    best_config["reduction_algo_name"],
-                    best_config["max_dim_num"],
-                    cv_data, cv_id
-                )
-                labels = clustering_algo(best_config["max_cluster_num"], cv_data)
-                scores.append(mutual_info_score(labels, cv_y_true[external_var_name].values))
+                try:
+                    cv_data = reduction_algo_wrapper(
+                        best_config["reduction_algo_name"],
+                        best_config["max_dim_num"],
+                        cv_data, cv_id
+                    )
+                    labels = clustering_algo(best_config["max_cluster_num"], cv_data)
+                    scores.append(mutual_info_score(labels, cv_y_true[external_var_name].values))
+                except Exception as e:
+                    print(e)
+                    scores.append(-1)
             all_mi[clustering_algo_name] = scores
         _, p_value = f_oneway(*list(all_mi.values()))
         random_cluster_algo = random.choice(list(all_mi.keys()))
@@ -178,13 +179,17 @@ def third_flow(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame], best_config_b
             scores = []
             best_config = best_config_by_clustering[clustering_algo_name]
             for cv_id, (cv_data, cv_y_true) in enumerate(zip(X_cvs, y_cvs)):
-                cv_data = reduction_algo_wrapper(
-                    best_config["reduction_algo_name"],
-                    best_config["max_dim_num"],
-                    cv_data, cv_id
-                )
-                labels = clustering_algo(cv_y_true[external_var_name].nunique(), cv_data)
-                scores.append(mutual_info_score(labels, cv_y_true[external_var_name].values))
+                try:
+                    cv_data = reduction_algo_wrapper(
+                        best_config["reduction_algo_name"],
+                        best_config["max_dim_num"],
+                        cv_data, cv_id
+                    )
+                    labels = clustering_algo(cv_y_true[external_var_name].nunique(), cv_data)
+                    scores.append(mutual_info_score(labels, cv_y_true[external_var_name].values))
+                except Exception as e:
+                    print(e)
+                    scores.append(-1)
             all_mi[external_var_name] = scores
         _, p_value = f_oneway(*list(all_mi.values()))
         if p_value < p_value_thr:
@@ -215,6 +220,8 @@ def main():
     best_config_by_clustering = main_flow(X_cvs)
     best_cluster_algo_per_external_var = second_flow(X_cvs, y_cvs, best_config_by_clustering)
     best_external_var_per_clustering = third_flow(X_cvs, y_cvs, best_config_by_clustering)
+    print("--------best_config_by_clustering------------")
+    print(best_config_by_clustering)
     print("--------best_cluster_algo_per_external_var------------")
     print(best_cluster_algo_per_external_var)
     print("--------best_external_var_per_clustering------------")
