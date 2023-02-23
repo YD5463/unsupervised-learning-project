@@ -14,7 +14,7 @@ import scipy.cluster.hierarchy as sch
 
 
 def k_mean(k, data: np.ndarray):
-    model = KMeans(k, n_init="auto", max_iter=1000)
+    model = KMeans(k, max_iter=1000)
     labels = model.fit_predict(data)
     return labels
 
@@ -90,16 +90,16 @@ clustering_algorithms = {
     "fuzzy_c_means": fuzzy_c_means,
     "gaussian_mixture": gaussian_mixture,
     "hierarchical_clustering": hierarchical_clustering,
-    "birch": birch,
-    "spectral_clustering": spectral_clustering,
-    "hierarchical_dbscan": hierarchical_dbscan,
+    # "birch": birch,
+    # "spectral_clustering": spectral_clustering,
+    # "hierarchical_dbscan": hierarchical_dbscan,
 }
 
 dim_reduction_algorithms = {
-    "TSNE": lambda k: TSNE(n_components=k, method="exact"),
-    "Isomap": lambda k: Isomap(n_components=k),
-    "MDS": lambda k: MDS(n_components=k),
-    "SpectralEmbedding": lambda k: SpectralEmbedding(n_components=k),
+    # "TSNE": lambda k: TSNE(n_components=k, method="exact"),
+    # "Isomap": lambda k: Isomap(n_components=k),
+    # "MDS": lambda k: MDS(n_components=k),
+    # "SpectralEmbedding": lambda k: SpectralEmbedding(n_components=k),
     "PCA": lambda k: PCA(n_components=k),
     "FastICA": lambda k: FastICA(n_components=k),
     "without_reduction": None

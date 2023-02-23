@@ -1,8 +1,7 @@
 import json
+import pickle
 import random
-from collections import defaultdict
 from typing import Tuple, Dict, Any, List
-
 import numpy as np
 import os
 import pandas as pd
@@ -14,15 +13,18 @@ from scipy.stats import ttest_rel
 from tqdm import tqdm
 from pathlib import Path
 
-OUTPUT_PATH = "output/"
+OUTPUT_PATH = "../output/"
 Path(OUTPUT_PATH).mkdir(parents=True, exist_ok=True)
+CACHE_PATH = "../cache/"
+Path(CACHE_PATH).mkdir(parents=True, exist_ok=True)
+
 
 # Config
-random_state = 0
+# random_state = 0
 data_path = "../data/fma_metadata"
 features = pd.read_csv(os.path.join(data_path, "features.csv"), index_col=0, header=[0, 1, 2])
 tracks = pd.read_csv(os.path.join(data_path, "tracks.csv"), index_col=0, header=[0, 1])
-dimentions_options = [10, None]
+dimentions_options = [10, 50]
 num_clusters_options = list(range(2, 20, 10))
 num_of_cvs = 5
 cv_size = 100
@@ -33,36 +35,51 @@ external_vars = [('track', 'genre_top'), ('track', 'license'), ('album', 'type')
 def load_data() -> Tuple[pd.DataFrame, pd.DataFrame]:
     for column in external_vars:
         tracks[column] = tracks[column].astype('category')
-    X, y = features, tracks[external_vars]  # X, y
-    for column in y:
-        print(column, y[column].nunique())
+    features.columns = features.columns.map('_'.join)
+    df = pd.concat([features, tracks[external_vars]], axis=1)
+    df = df.dropna()
+    X, y = df.drop(external_vars, axis=1), df[external_vars]
     return X, y
 
 
-def generate_cvs(X: np.ndarray, y: pd.DataFrame):
+def generate_cvs(X: pd.DataFrame, y: pd.DataFrame) -> Tuple[List[np.ndarray], List[pd.DataFrame]]:
     X_cvs = []
     y_cvs = []
     for i in range(num_of_cvs):
-        rows = np.random.randint(cv_size, size=X.shape[0]).astype('bool')
-        X_cvs.append(X[rows])
-        y_cvs.append(y[rows])
+        rows = np.random.randint(X.shape[0], size=cv_size)
+        X_cvs.append(X.iloc[rows].values)
+        y_cvs.append(y.iloc[rows])
     return X_cvs, y_cvs
+
+
+def reduction_algo_wrapper(reduction_algo_name: str, dim_num: int, cv_data: np.ndarray, cv_id: int) -> np.ndarray:
+    reduction_algo = dim_reduction_algorithms[reduction_algo_name]
+    if reduction_algo is None:
+        return cv_data
+    cache_file = os.path.join(CACHE_PATH, f"{reduction_algo_name}-{dim_num}-{cv_id}.pkl")
+    if Path(cache_file).is_file():
+        print(f"using cache file {cache_file}")
+        with open(cache_file, "rb") as file:
+            return pickle.load(file)
+    cv_data = reduction_algo(dim_num).fit_transform(cv_data)
+    with open(cache_file, "wb") as file:
+        pickle.dump(cv_data, file)
+    return cv_data
 
 
 def main_flow(X_cvs: List[np.ndarray]) -> Dict[str, Dict[str, Any]]:
     best_config_by_clustering = dict()
-    for clustering_algo_name, clustering_algo in tqdm(clustering_algorithms.items()):
+    for clustering_algo_name, clustering_algo in clustering_algorithms.items():
         dim_reduction_scores = dict()
-        dim_reduction_meta = dict()
-        for reduction_algo_name, reduction_algo in dim_reduction_algorithms.items():
-            print(f"in reduction_algo: {reduction_algo_name}")
+        dim_reduction_meta: Dict[str, Dict[str, Any]] = dict()
+        for reduction_algo_name in tqdm(dim_reduction_algorithms.keys()):
             max_score = float("-inf")
             for dim_num in dimentions_options:
                 for k_clusters in num_clusters_options:
                     scores = []
-                    for cv_data in X_cvs:
-                        if reduction_algo:
-                            cv_data = reduction_algo(dim_num).fit_transform(cv_data)
+                    for cv_id, cv_data in enumerate(X_cvs):
+                        cv_data = reduction_algo_wrapper(reduction_algo_name,dim_num,cv_data, cv_id)
+                        print(f"doing {clustering_algo_name} for {cv_data.shape} by {reduction_algo_name}")
                         labels = clustering_algo(k_clusters, cv_data)
                         scores.append(silhouette_score(cv_data, labels))
                     curr_score = np.mean(scores)
@@ -77,7 +94,7 @@ def main_flow(X_cvs: List[np.ndarray]) -> Dict[str, Dict[str, Any]]:
                             "reduction_algo_name": reduction_algo_name
                         }
 
-        _, p_value = f_oneway(list(dim_reduction_scores.values()))
+        _, p_value = f_oneway(*list(dim_reduction_scores.values()))
         best_config_by_clustering[clustering_algo_name] = random.choice(list(dim_reduction_meta.values()))
         if p_value < p_value_thr:
             sorted_reduction_algos = sorted(
@@ -97,9 +114,9 @@ def main_flow(X_cvs: List[np.ndarray]) -> Dict[str, Dict[str, Any]]:
         else:
             print(f"followed by annova: algorithms {dim_reduction_scores.keys()} are the same")
         print(f"picking for {clustering_algo_name}: {best_config_by_clustering[clustering_algo_name]}")
-        print(best_config_by_clustering)
-        with open("output/best_config_by_clustering", "w") as file:
+        with open(f"{OUTPUT_PATH}/best_config_by_clustering.json", "w") as file:
             json.dump(best_config_by_clustering, file)
+    print(best_config_by_clustering)
     return best_config_by_clustering
 
 
@@ -108,18 +125,24 @@ def second_flow(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame], best_config_
     best_cluster_algo_per_external_var = dict()
     for external_var_name in external_vars:
         all_mi = dict()
-        for clustering_algo, best_config in best_config_by_clustering.items():
+        for clustering_algo_name, clustering_algo in clustering_algorithms.items():
             scores = []
-            for cv_data, cv_y_true in zip(X_cvs, y_cvs):
-                reduction_algo = dim_reduction_algorithms[best_config["reduction_algo_name"]]
-                if reduction_algo:
-                    cv_data = reduction_algo(best_config["max_dim_num"]).fit_transform(cv_data)
-                labels = clustering_algorithms[clustering_algo](best_config["max_cluster_num"], cv_data)
+            best_config = best_config_by_clustering[clustering_algo_name]
+            for cv_id, (cv_data, cv_y_true) in enumerate(zip(X_cvs, y_cvs)):
+                cv_data = reduction_algo_wrapper(
+                    best_config["reduction_algo_name"],
+                    best_config["max_dim_num"],
+                    cv_data, cv_id
+                )
+                labels = clustering_algo(best_config["max_cluster_num"], cv_data)
                 scores.append(mutual_info_score(labels, cv_y_true[external_var_name].values))
-            all_mi[clustering_algo] = scores
-
-        _, p_value = f_oneway(all_mi.values())
-        best_cluster_algo_per_external_var[external_var_name] = random.choice(list(all_mi.values()))
+            all_mi[clustering_algo_name] = scores
+        _, p_value = f_oneway(*list(all_mi.values()))
+        random_cluster_algo = random.choice(list(all_mi.keys()))
+        best_cluster_algo_per_external_var[external_var_name] = {
+            "algo_name": random_cluster_algo,
+            "scores": all_mi[random_cluster_algo]
+        }
         if p_value < p_value_thr:
             sorted_by_algo_scores = sorted(
                 all_mi,
@@ -128,7 +151,7 @@ def second_flow(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame], best_config_
             )
             algo_name_1, algo_name_2 = sorted_by_algo_scores[:2]
             _, t_test_p_value = ttest_rel(all_mi[algo_name_1], all_mi[algo_name_2])
-            best_algo_name: str = sorted_by_algo_scores[0]
+            best_algo_name = sorted_by_algo_scores[0]
             best_cluster_algo_per_external_var[external_var_name] = {
                 "algo_name": best_algo_name,
                 "scores": all_mi[best_algo_name]
@@ -138,32 +161,60 @@ def second_flow(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame], best_config_
         else:
             print(f"followed by annova: algorithms {all_mi.keys()} are the same")
     print(best_cluster_algo_per_external_var)
-    with open("output/best_cluster_algo_per_external_var.json", "w") as file:
-        json.dump(best_cluster_algo_per_external_var, file)
+    with open(f"{OUTPUT_PATH}/best_cluster_algo_per_external_var.pkl", "wb") as file:
+        pickle.dump(best_cluster_algo_per_external_var, file)
     return best_cluster_algo_per_external_var
 
 
 def third_flow(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame], best_config_by_clustering: Dict[str, Dict[str, Any]]):
-    all_mi = dict()
-    for clustering_algo, best_config in best_config_by_clustering.items():
-        for external_var in external_vars:
-            for cv in X_cvs:
-                # change in best_config max_cluster_num to len(np.unique(external_var))
-                labels = clustering_algorithms[clustering_algo]()
-                all_mi[clustering_algo, external_var].append(mutual_info_score(labels, external_var))
-        _, p_value = f_oneway(all_mi[clustering_algo, :].values())
-
-        # t-test with the top 2
-        # yield best_cluster_algo_per_external_var
+    best_external_var_per_clustering = dict()
+    for clustering_algo_name, clustering_algo in clustering_algorithms.items():
+        all_mi = dict()
+        for external_var_name in external_vars:
+            scores = []
+            best_config = best_config_by_clustering[clustering_algo_name]
+            for cv_id, (cv_data, cv_y_true) in enumerate(zip(X_cvs, y_cvs)):
+                cv_data = reduction_algo_wrapper(
+                    best_config["reduction_algo_name"],
+                    best_config["max_dim_num"],
+                    cv_data, cv_id
+                )
+                labels = clustering_algo(cv_y_true[external_var_name].nunique(), cv_data)
+                scores.append(mutual_info_score(labels, cv_y_true[external_var_name].values))
+            all_mi[external_var_name] = scores
+        _, p_value = f_oneway(*list(all_mi.values()))
+        if p_value < p_value_thr:
+            sorted_by_scores = sorted(
+                all_mi,
+                key=lambda key: np.mean(all_mi[key]),
+                reverse=True
+            )
+            var1, var2 = sorted_by_scores[:2]
+            _, t_test_p_value = ttest_rel(all_mi[var1], all_mi[var2])
+            best_external_var_per_clustering[clustering_algo_name] = sorted_by_scores[0]
+            if t_test_p_value >= p_value_thr:
+                print(f"followed by t-test: algorithms {var1}, {var2} are the same")
+        else:
+            print(f"followed by annova: algorithms {list(all_mi.keys())} are the same")
+            best_external_var_per_clustering[clustering_algo_name] = None
+    print(best_external_var_per_clustering)
+    with open(f"{OUTPUT_PATH}/best_external_var_per_clustering.pkl", "wb") as file:
+        pickle.dump(best_external_var_per_clustering, file)
+    return best_external_var_per_clustering
 
 
 def main():
     X, y = load_data()
-    rows = np.random.randint(cv_size, size=X.shape[0]).astype('bool')
-    X, y = X[rows].values, y[rows]
+    rows = np.random.randint(X.shape[0], size=cv_size)
+    X, y = X.iloc[rows], y.iloc[rows]
     X_cvs, y_cvs = generate_cvs(X, y)
     best_config_by_clustering = main_flow(X_cvs)
-    second_flow(X, y, best_config_by_clustering)
+    best_cluster_algo_per_external_var = second_flow(X_cvs, y_cvs, best_config_by_clustering)
+    best_external_var_per_clustering = third_flow(X_cvs, y_cvs, best_config_by_clustering)
+    print("--------best_cluster_algo_per_external_var------------")
+    print(best_cluster_algo_per_external_var)
+    print("--------best_external_var_per_clustering------------")
+    print(best_external_var_per_clustering)
 
 
 if __name__ == '__main__':
