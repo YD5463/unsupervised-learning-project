@@ -1,9 +1,5 @@
 import numpy as np
-from keras import Model, Input
-from keras.legacy_tf_layers.core import Dense
-from matplotlib import pyplot as plt
 from sklearn.decomposition import PCA, FastICA
-from sklearn.metrics import silhouette_score
 from sklearn.mixture import GaussianMixture
 from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering, Birch
 from sklearn.manifold import TSNE, SpectralEmbedding, Isomap, MDS
@@ -12,7 +8,6 @@ from sklearn.cluster import SpectralClustering
 from sklearn.ensemble import IsolationForest
 from sklearn.svm import OneClassSVM
 import hdbscan
-import scipy.cluster.hierarchy as sch
 
 
 def k_mean(k, data: np.ndarray):
@@ -22,7 +17,7 @@ def k_mean(k, data: np.ndarray):
 
 
 def fuzzy_c_means(k, data: np.ndarray):
-    model = FCM(n_clusters=k, n_jobs=8)
+    model = FCM(n_clusters=k, n_jobs=-1)
     model.fit(data)
     return model.predict(data)
 
@@ -46,7 +41,7 @@ def birch(k: int, data: np.ndarray):
 
 
 def spectral_clustering(k: int, data: np.ndarray):
-    model = SpectralClustering(n_clusters=k, assign_labels='discretize')
+    model = SpectralClustering(n_clusters=k, assign_labels='discretize', n_jobs=-1)
     labels = model.fit_predict(data)
     return labels
 
@@ -57,34 +52,10 @@ def hierarchical_dbscan(k: int, data: np.ndarray):
     return model.labels_
 
 
-def get_best_dbscan_params(clean_X: np.ndarray, min_samples: int):
-    range_eps = np.linspace(0.1, 10, 20)
-    scores = []
-    for eps in range_eps:
-        model = DBSCAN(eps=eps, min_samples=min_samples)
-        good_labels = model.fit_predict(clean_X)
-        noisy_data_count = len(good_labels[good_labels == -1])
-        if noisy_data_count > good_labels.shape[0] * 0.5 or len(np.unique(good_labels)) < 3:
-            scores.append(0)
-            continue
-        print(f"noisy data count with eps={eps}: {noisy_data_count}")
-        try:
-            score = silhouette_score(clean_X, good_labels)
-        except Exception as e:
-            print(e)
-            score = 0
-        scores.append(score)
-    plt.plot(range_eps, scores)
-    plt.show()
-    return range_eps[np.argmax(scores)]
-
-
-def visualize_hierarchical_clustering(data: np.ndarray):
-    sch.dendrogram(sch.linkage(data, method='ward'))
-    plt.title('Dendrogram')
-    plt.xlabel('Customers')
-    plt.ylabel('Euclidean distances')
-    plt.show()
+def dbscan(k: int, data: np.ndarray):
+    model = DBSCAN(eps=((k / 10) ** 2) * data.shape[1], min_samples=5, n_jobs=-1)
+    labels = model.fit_predict(data)
+    return labels
 
 
 clustering_algorithms = {
@@ -94,42 +65,21 @@ clustering_algorithms = {
     "hierarchical_clustering": hierarchical_clustering,
     "birch": birch,
     "spectral_clustering": spectral_clustering,
-    "hierarchical_dbscan": hierarchical_dbscan,
+    "dbscan": dbscan,
 }
 
-
-# def autoencoder_dim_reduction():
-#     input_img = Input(shape=(img.width,))
-#     encoded1 = Dense(128, activation='relu')(input_img)
-#     encoded2 = Dense(reduced_pixel, activation='relu')(encoded1)
-#     decoded1 = Dense(128, activation='relu')(encoded2)
-#     decoded2 = Dense(img.width, activation=None)(decoded1)
-#     autoencoder = Model(input_img, decoded2)
-#     autoencoder.compile(optimizer='adadelta', loss='mean_squared_error')
-#     autoencoder.fit(X, X,
-#                     epochs=500,
-#                     batch_size=16,
-#                     shuffle=True)
-#     # Encoder
-#     encoder = Model(input_img, encoded2)
-#     # Decoder
-#     decoder = Model(input_img, decoded2)
-#     encoded_imgs = encoder.predict(X)
-#     decoded_imgs = decoder.predict(X)
-
-
 dim_reduction_algorithms = {
-    "TSNE": lambda k: TSNE(n_components=k, method="exact", init="random"),
-    "Isomap": lambda k: Isomap(n_components=k),
-    "MDS": lambda k: MDS(n_components=k),
-    "SpectralEmbedding": lambda k: SpectralEmbedding(n_components=k),
+    "TSNE": lambda k: TSNE(n_components=k, method="exact", init="random", n_jobs=-1),
+    "Isomap": lambda k: Isomap(n_components=k, n_jobs=-1),
+    "MDS": lambda k: MDS(n_components=k, n_jobs=-1),
+    "SpectralEmbedding": lambda k: SpectralEmbedding(n_components=k, n_jobs=-1),
     "PCA": lambda k: PCA(n_components=k),
-    "FastICA": lambda k: FastICA(n_components=k),
+    "FastICA": lambda k: FastICA(n_components=k, max_iter=1000),
     "without_reduction": None
 }
 
 anomaly_detection_algorithms = {
-    "OneClassSVM": OneClassSVM(),
-    "IsolationForest": IsolationForest(n_estimators=500),
-    "DBSCAN": DBSCAN(eps=0.4, min_samples=10)
+    "OneClassSVM": OneClassSVM(kernel="rbf", max_iter=1000, nu=0.05, gamma='scale'),
+    "IsolationForest": IsolationForest(random_state=0, n_jobs=-1, n_estimators=500, max_samples=256),
+    "DBSCAN": DBSCAN(eps=5, min_samples=5, n_jobs=-1)
 }

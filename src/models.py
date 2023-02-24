@@ -1,4 +1,3 @@
-import json
 import pickle
 import random
 from typing import Tuple, Dict, Any, List
@@ -7,47 +6,53 @@ import os
 import pandas as pd
 from src.algorithms import clustering_algorithms, dim_reduction_algorithms, anomaly_detection_algorithms
 from sklearn.metrics import mutual_info_score
-from sklearn.metrics import silhouette_score, silhouette_samples
+from sklearn.metrics import silhouette_score
 from scipy.stats import f_oneway
 from scipy.stats import ttest_rel
 from tqdm import tqdm
 from pathlib import Path
+from sklearn.preprocessing import MinMaxScaler
 
 OUTPUT_PATH = "../output/"
 Path(OUTPUT_PATH).mkdir(parents=True, exist_ok=True)
 CACHE_PATH = "../cache/"
 Path(CACHE_PATH).mkdir(parents=True, exist_ok=True)
 
-
 # Config
 # random_state = 0
 data_path = "../data/fma_metadata"
-features = pd.read_csv(os.path.join(data_path, "features.csv"), index_col=0, header=[0, 1, 2])
-tracks = pd.read_csv(os.path.join(data_path, "tracks.csv"), index_col=0, header=[0, 1])
-dimentions_options = [10, 50, 200]
-num_clusters_options = list(range(2, 20, 10))
-num_of_cvs = 5
-cv_size = 100
-p_value_thr = 0.0005
-external_vars = [('track', 'genre_top'), ('track', 'license'), ('album', 'type')]
+dimentions_options = [10, 50, 100, 200]
+num_clusters_options = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+num_of_cvs = 7
+cv_size = 10000
+p_value_thr = 0.05
+external_vars = ["('track', 'genre_top')", "('track', 'license')", "('album', 'type')"]
 
 
-def load_data() -> Tuple[pd.DataFrame, pd.DataFrame]:
-    for column in external_vars:
-        tracks[column] = tracks[column].astype('category')
-    features.columns = features.columns.map('_'.join)
-    df = pd.concat([features, tracks[external_vars]], axis=1)
-    df = df.dropna()
+def load_data() -> Tuple[np.ndarray, pd.DataFrame]:
+    cache_file = f"{OUTPUT_PATH}/clean_static_data.csv"
+    if Path(cache_file).is_file():
+        df = pd.read_csv(cache_file)
+    else:
+        features = pd.read_csv(os.path.join(data_path, "features.csv"), index_col=0, header=[0, 1, 2])
+        tracks = pd.read_csv(os.path.join(data_path, "tracks.csv"), index_col=0, header=[0, 1])
+        features.columns = features.columns.map('_'.join)
+        df = pd.concat([features, tracks[external_vars]], axis=1)
+        df = df.dropna()
+        df.to_csv(cache_file)
     X, y = df.drop(external_vars, axis=1), df[external_vars]
+    for column in external_vars:
+        y[column] = y[column].astype('category').cat.codes
+    X = MinMaxScaler(feature_range=(-1, 1)).fit_transform(X)
     return X, y
 
 
-def generate_cvs(X: pd.DataFrame, y: pd.DataFrame) -> Tuple[List[np.ndarray], List[pd.DataFrame]]:
+def generate_cvs(X: np.ndarray, y: pd.DataFrame) -> Tuple[List[np.ndarray], List[pd.DataFrame]]:
     X_cvs = []
     y_cvs = []
     for i in range(num_of_cvs):
         rows = np.random.randint(X.shape[0], size=cv_size)
-        X_cvs.append(X.iloc[rows].values)
+        X_cvs.append(X[rows, :].values)
         y_cvs.append(y.iloc[rows])
     return X_cvs, y_cvs
 
@@ -58,7 +63,6 @@ def reduction_algo_wrapper(reduction_algo_name: str, dim_num: int, cv_data: np.n
         return cv_data
     cache_file = os.path.join(CACHE_PATH, f"{reduction_algo_name}-{dim_num}-{cv_id}.pkl")
     if Path(cache_file).is_file():
-        # print(f"using cache file {cache_file}")
         with open(cache_file, "rb") as file:
             return pickle.load(file)
     cv_data = reduction_algo(dim_num).fit_transform(cv_data)
@@ -79,7 +83,7 @@ def main_flow(X_cvs: List[np.ndarray]) -> Dict[str, Dict[str, Any]]:
                     scores = []
                     for cv_id, cv_data in enumerate(X_cvs):
                         try:
-                            cv_data = reduction_algo_wrapper(reduction_algo_name,dim_num,cv_data, cv_id)
+                            cv_data = reduction_algo_wrapper(reduction_algo_name, dim_num, cv_data, cv_id)
                             print(f"doing {clustering_algo_name} for {cv_data.shape} by {reduction_algo_name}")
                             labels = clustering_algo(k_clusters, cv_data)
                             scores.append(silhouette_score(cv_data, labels))
@@ -121,7 +125,8 @@ def main_flow(X_cvs: List[np.ndarray]) -> Dict[str, Dict[str, Any]]:
     return best_config_by_clustering
 
 
-def second_flow(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame], best_config_by_clustering: Dict[str, Dict[str, Any]]):
+def second_flow(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame],
+                best_config_by_clustering: Dict[str, Dict[str, Any]]):
     # hidden variables with the best clustering and dim_reduction
     best_cluster_algo_per_external_var = dict()
     for external_var_name in external_vars:
@@ -171,7 +176,8 @@ def second_flow(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame], best_config_
     return best_cluster_algo_per_external_var
 
 
-def third_flow(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame], best_config_by_clustering: Dict[str, Dict[str, Any]]):
+def third_flow(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame],
+               best_config_by_clustering: Dict[str, Dict[str, Any]]):
     best_external_var_per_clustering = dict()
     for clustering_algo_name, clustering_algo in clustering_algorithms.items():
         all_mi = dict()
@@ -211,22 +217,3 @@ def third_flow(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame], best_config_b
         pickle.dump(best_external_var_per_clustering, file)
     return best_external_var_per_clustering
 
-
-def main():
-    X, y = load_data()
-    rows = np.random.randint(X.shape[0], size=cv_size)
-    X, y = X.iloc[rows], y.iloc[rows]
-    X_cvs, y_cvs = generate_cvs(X, y)
-    best_config_by_clustering = main_flow(X_cvs)
-    best_cluster_algo_per_external_var = second_flow(X_cvs, y_cvs, best_config_by_clustering)
-    best_external_var_per_clustering = third_flow(X_cvs, y_cvs, best_config_by_clustering)
-    print("--------best_config_by_clustering------------")
-    print(best_config_by_clustering)
-    print("--------best_cluster_algo_per_external_var------------")
-    print(best_cluster_algo_per_external_var)
-    print("--------best_external_var_per_clustering------------")
-    print(best_external_var_per_clustering)
-
-
-if __name__ == '__main__':
-    main()
