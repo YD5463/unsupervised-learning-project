@@ -69,17 +69,18 @@ clustering_algorithms = {
 }
 
 dim_reduction_algorithms = {
-    "TSNE": lambda k: TSNE(n_components=k, method="exact", init="random", n_jobs=-1),
-    "Isomap": lambda k: Isomap(n_components=k, n_jobs=-1),
-    "MDS": lambda k: MDS(n_components=k, n_jobs=-1),
-    "SpectralEmbedding": lambda k: SpectralEmbedding(n_components=k, n_jobs=-1),
+    "MDS": lambda k: MDS(n_components=k, n_jobs=-1, max_iter=300),
     "PCA": lambda k: PCA(n_components=k),
-    "FastICA": lambda k: FastICA(n_components=k, max_iter=1000),
-    "without_reduction": None
+    "FastICA": lambda k: FastICA(n_components=k, max_iter=200),
+    "without_reduction": None,
+    "Isomap": lambda k: Isomap(n_components=k, n_jobs=-1, max_iter=200),
+    "SpectralEmbedding": lambda k: SpectralEmbedding(n_components=k, n_jobs=-1),
+    # "TSNE": lambda k: TSNE(n_components=k, method="exact", init="random", n_jobs=-1, n_iter=250),
 }
 
 anomaly_detection_algorithms = {
-    "OneClassSVM": OneClassSVM(kernel="rbf", max_iter=1000, nu=0.05, gamma='scale'),
+    "without_anomaly": None,
+    # "OneClassSVM": OneClassSVM(kernel="rbf", max_iter=1000, nu=0.05, gamma='scale'),
     "IsolationForest": IsolationForest(random_state=0, n_jobs=-1, n_estimators=500, max_samples=256),
     "DBSCAN": DBSCAN(eps=5, min_samples=5, n_jobs=-1)
 }

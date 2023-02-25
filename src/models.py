@@ -12,6 +12,10 @@ from scipy.stats import ttest_rel
 from tqdm import tqdm
 from pathlib import Path
 from sklearn.preprocessing import MinMaxScaler
+from datetime import datetime
+import warnings
+
+warnings.filterwarnings("ignore")
 
 OUTPUT_PATH = "../output/"
 Path(OUTPUT_PATH).mkdir(parents=True, exist_ok=True)
@@ -24,13 +28,23 @@ data_path = "../data/fma_metadata"
 dimentions_options = [10, 50, 100, 200]
 num_clusters_options = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
 num_of_cvs = 7
-cv_size = 10000
+cv_size = 5000
 p_value_thr = 0.05
 external_vars = ["('track', 'genre_top')", "('track', 'license')", "('album', 'type')"]
 
 
+def start_new_experiment(exp_name: str):
+    global OUTPUT_PATH
+    global CACHE_PATH
+    suffix = f"{exp_name}-{datetime.today().strftime('%m-%d %H:%M:%S')}"
+    OUTPUT_PATH = f"../output/{suffix}/"
+    Path(OUTPUT_PATH).mkdir(parents=True, exist_ok=True)
+    CACHE_PATH = f"../cache/{suffix}/"
+    Path(CACHE_PATH).mkdir(parents=True, exist_ok=True)
+
+
 def load_data() -> Tuple[np.ndarray, pd.DataFrame]:
-    cache_file = f"{OUTPUT_PATH}/clean_static_data.csv"
+    cache_file = f"{data_path}/clean_static_data.csv"
     if Path(cache_file).is_file():
         df = pd.read_csv(cache_file)
     else:
@@ -52,7 +66,7 @@ def generate_cvs(X: np.ndarray, y: pd.DataFrame) -> Tuple[List[np.ndarray], List
     y_cvs = []
     for i in range(num_of_cvs):
         rows = np.random.randint(X.shape[0], size=cv_size)
-        X_cvs.append(X[rows, :].values)
+        X_cvs.append(X[rows, :])
         y_cvs.append(y.iloc[rows])
     return X_cvs, y_cvs
 
@@ -104,7 +118,7 @@ def get_silhouette_scores(
         dim_num: int, k_clusters: int
 ) -> List[float]:
     scores = []
-    for cv_id, cv_data in enumerate(X_cvs):
+    for cv_id, cv_data in tqdm(enumerate(X_cvs)):
         try:
             cv_data = reduction_algo_wrapper(reduction_algo_name, dim_num, cv_data, cv_id)
             print(f"doing {clustering_algo_name} for {cv_data.shape} by {reduction_algo_name}")
@@ -117,15 +131,15 @@ def get_silhouette_scores(
     return scores
 
 
-def main_flow(X_cvs: List[np.ndarray]) -> Dict[str, Dict[str, Any]]:
+def find_best_config_by_clustering(X_cvs: List[np.ndarray]) -> Dict[str, Dict[str, Any]]:
     best_config_by_clustering = dict()
     for clustering_algo_name in clustering_algorithms.keys():
         dim_reduction_scores = dict()
         dim_reduction_meta: Dict[str, Dict[str, Any]] = dict()
         for reduction_algo_name in tqdm(dim_reduction_algorithms.keys()):
             max_score = float("-inf")
-            for dim_num in dimentions_options:
-                for k_clusters in num_clusters_options:
+            for dim_num in tqdm(dimentions_options):
+                for k_clusters in tqdm(num_clusters_options):
                     scores = get_silhouette_scores(
                         X_cvs, clustering_algo_name,
                         reduction_algo_name, dim_num, k_clusters
@@ -147,16 +161,16 @@ def main_flow(X_cvs: List[np.ndarray]) -> Dict[str, Dict[str, Any]]:
     return best_config_by_clustering
 
 
-def second_flow(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame],
-                best_config_by_clustering: Dict[str, Dict[str, Any]]):
+def find_best_cluster_algo_per_external_var(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame],
+                                            best_config_by_clustering: Dict[str, Dict[str, Any]]):
     # hidden variables with the best clustering and dim_reduction
     best_cluster_algo_per_external_var = dict()
     for external_var_name in external_vars:
         all_mi = dict()
-        for clustering_algo_name, clustering_algo in clustering_algorithms.items():
+        for clustering_algo_name, clustering_algo in tqdm(clustering_algorithms.items()):
             scores = []
             best_config = best_config_by_clustering[clustering_algo_name]
-            for cv_id, (cv_data, cv_y_true) in enumerate(zip(X_cvs, y_cvs)):
+            for cv_id, (cv_data, cv_y_true) in tqdm(enumerate(zip(X_cvs, y_cvs))):
                 try:
                     cv_data = reduction_algo_wrapper(
                         best_config["reduction_algo_name"],
@@ -180,15 +194,15 @@ def second_flow(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame],
     return best_cluster_algo_per_external_var
 
 
-def third_flow(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame],
-               best_config_by_clustering: Dict[str, Dict[str, Any]]):
+def find_best_external_var_per_clustering(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame],
+                                          best_config_by_clustering: Dict[str, Dict[str, Any]]):
     best_external_var_per_clustering = dict()
     for clustering_algo_name, clustering_algo in clustering_algorithms.items():
         all_mi = dict()
-        for external_var_name in external_vars:
+        for external_var_name in tqdm(external_vars):
             scores = []
             best_config = best_config_by_clustering[clustering_algo_name]
-            for cv_id, (cv_data, cv_y_true) in enumerate(zip(X_cvs, y_cvs)):
+            for cv_id, (cv_data, cv_y_true) in tqdm(enumerate(zip(X_cvs, y_cvs))):
                 try:
                     cv_data = reduction_algo_wrapper(
                         best_config["reduction_algo_name"],
@@ -206,3 +220,25 @@ def third_flow(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame],
     with open(f"{OUTPUT_PATH}/best_external_var_per_clustering.pkl", "wb") as file:
         pickle.dump(best_external_var_per_clustering, file)
     return best_external_var_per_clustering
+
+
+def full_flow():
+    X, y = load_data()
+    X_cvs, y_cvs = generate_cvs(X, y)
+    for anomaly_algo_name, anomaly_algo in tqdm(anomaly_detection_algorithms.items()):
+        print(f"\n\n--------------{anomaly_algo_name}-------------\n")
+        start_new_experiment(anomaly_algo_name)
+        if anomaly_algo:
+            labels = anomaly_algo.fit_predict(X)
+            X_cvs, y_cvs = generate_cvs(X[labels != -1], y[labels != -1])
+        best_config_by_clustering = find_best_config_by_clustering(X_cvs)
+        best_cluster_algo_per_external_var = find_best_cluster_algo_per_external_var(X_cvs, y_cvs,
+                                                                                     best_config_by_clustering)
+        best_external_var_per_clustering = find_best_external_var_per_clustering(X_cvs, y_cvs,
+                                                                                 best_config_by_clustering)
+        print("--------best_config_by_clustering------------")
+        print(best_config_by_clustering)
+        print("\n--------best_cluster_algo_per_external_var------------")
+        print(best_cluster_algo_per_external_var)
+        print("\n--------best_external_var_per_clustering------------")
+        print(best_external_var_per_clustering)
