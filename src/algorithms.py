@@ -7,6 +7,8 @@ from fcmeans import FCM
 from sklearn.cluster import SpectralClustering
 from sklearn.ensemble import IsolationForest
 from sklearn.svm import OneClassSVM
+from sklearn.manifold import LocallyLinearEmbedding
+from umap import UMAP
 import hdbscan
 
 
@@ -75,6 +77,8 @@ dim_reduction_algorithms = {
     "without_reduction": None,
     "Isomap": lambda k: Isomap(n_components=k, n_jobs=-1, max_iter=200),
     "SpectralEmbedding": lambda k: SpectralEmbedding(n_components=k, n_jobs=-1),
+    "LLE": lambda k: LocallyLinearEmbedding(n_components=k, n_jobs=-1),
+    "UMAP": lambda k: UMAP(n_neighbors=100, n_components=k, n_epochs=1000, init='spectral', low_memory=False, verbose=False)
     # "TSNE": lambda k: TSNE(n_components=k, method="exact", init="random", n_jobs=-1, n_iter=250),
 }
 

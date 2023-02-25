@@ -43,3 +43,13 @@ def elbow_method(X: np.ndarray, labels: np.ndarray, n_clusters: int):
     plt.axvline(x=silhouette_avg, color="red", linestyle="--")
     plt.yticks([])
 
+
+# def reduce_dimension(X):
+#     models = [TSNE(n_components=2), Isomap(n_components=2), MDS(n_components=2), SpectralEmbedding(n_components=2)]
+#     fig, axs = plt.subplots(nrows=len(models), ncols=1, figsize=(8, 8))
+#     fig.tight_layout()
+#     for i, model in tqdm(enumerate(models)):
+#         X_embedded_tsne = model.fit_transform(X)
+#         axs[i].scatter(X_embedded_tsne[:, 0], X_embedded_tsne[:, 1], s=40, cmap='viridis')
+#         axs[i].set_title(f"{model} dimensionality reduction")
+#     plt.show()

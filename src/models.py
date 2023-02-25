@@ -1,5 +1,6 @@
 import pickle
 import random
+from collections import defaultdict
 from typing import Tuple, Dict, Any, List
 import numpy as np
 import os
@@ -242,3 +243,23 @@ def full_flow():
         print(best_cluster_algo_per_external_var)
         print("\n--------best_external_var_per_clustering------------")
         print(best_external_var_per_clustering)
+
+
+def external_var_to_anomalies():
+    X, y = load_data()
+    for anomaly_algo_name, anomaly_algo in tqdm(anomaly_detection_algorithms.items(), position=0, desc="anomaly", leave=False, colour='green', ncols=80):
+        if anomaly_algo is None:
+            continue
+        scores = defaultdict(list)
+        labels = anomaly_algo.fit_predict(X)
+        for external_var_name in tqdm(external_vars, position=1, desc="external_var", leave=False, colour='blue', ncols=80):
+            scores[external_var_name].append(
+                mutual_info_score(
+                    labels[labels == -1],
+                    y[external_var_name].values[labels == -1]
+                )
+            )
+
+        for external_var_name, external_var_scores in scores.items():
+            print(f"{external_var_name}: {np.mean(external_var_scores)}")
+
