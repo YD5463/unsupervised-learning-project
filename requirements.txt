@@ -8,3 +8,6 @@ torch~=1.13.1
 tqdm~=4.64.1
 umap-learn~=0.5.3
 hdbscan~=0.8.29
+python-louvain
+fuzzy-c-means
+hmmlearn

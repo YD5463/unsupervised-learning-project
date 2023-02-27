@@ -107,7 +107,7 @@ def find_best_algo(scores_mapping: Dict[str, List[float]], random_when_same: boo
             if not random_when_same:
                 return f"{candidate1, candidate2}"
     else:
-        print(f"followed by annova: algorithms {best_algo.keys()} are the same")
+        print(f"followed by annova: algorithms {scores_mapping.keys()} are the same")
         if not random_when_same:
             return ""
     return best_algo
@@ -253,6 +253,7 @@ def external_var_to_anomalies():
         scores = defaultdict(list)
         labels = anomaly_algo.fit_predict(X)
         for external_var_name in tqdm(external_vars, position=1, desc="external_var", leave=False, colour='blue', ncols=80):
+            print(y[external_var_name].values[labels == -1])
             scores[external_var_name].append(
                 mutual_info_score(
                     labels[labels == -1],
@@ -263,3 +264,6 @@ def external_var_to_anomalies():
         for external_var_name, external_var_scores in scores.items():
             print(f"{external_var_name}: {np.mean(external_var_scores)}")
 
+
+if __name__ == '__main__':
+    external_var_to_anomalies()
