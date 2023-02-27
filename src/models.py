@@ -27,10 +27,10 @@ Path(CACHE_PATH).mkdir(parents=True, exist_ok=True)
 # Config
 # random_state = 0
 data_path = "../data/fma_metadata"
-dimentions_options = [10, 50, 100, 200]
-num_clusters_options = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+dimentions_options = [10, 50, 100]
+num_clusters_options = [2, 4, 8, 12, 16, 20]
 num_of_cvs = 5
-cv_size = 7000
+cv_size = 5000
 p_value_thr = 0.05
 external_vars = ["('track', 'genre_top')", "('track', 'license')", "('album', 'type')"]
 
@@ -267,6 +267,7 @@ def full_flow():
     X_cvs, y_cvs = generate_cvs(X, y)
     best_config_by_clustering = find_best_config_by_clustering(X_cvs)
     find_best_clustering_algo(best_config_by_clustering)
+    # check_if_anomaly_detection_improves(X_cvs, )
     best_cluster_algo_per_external_var = find_best_cluster_algo_per_external_var(
         X_cvs, y_cvs,
         best_config_by_clustering
