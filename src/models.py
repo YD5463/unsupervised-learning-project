@@ -1,3 +1,4 @@
+import json
 import pickle
 import random
 from collections import defaultdict
@@ -28,8 +29,8 @@ Path(CACHE_PATH).mkdir(parents=True, exist_ok=True)
 data_path = "../data/fma_metadata"
 dimentions_options = [10, 50, 100, 200]
 num_clusters_options = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
-num_of_cvs = 7
-cv_size = 5000
+num_of_cvs = 5
+cv_size = 7000
 p_value_thr = 0.05
 external_vars = ["('track', 'genre_top')", "('track', 'license')", "('album', 'type')"]
 
@@ -40,7 +41,7 @@ def start_new_experiment(exp_name: str):
     suffix = f"{exp_name}-{datetime.today().strftime('%m-%d %H:%M:%S')}"
     OUTPUT_PATH = f"../output/{suffix}/"
     Path(OUTPUT_PATH).mkdir(parents=True, exist_ok=True)
-    CACHE_PATH = f"../cache/{suffix}/"
+    CACHE_PATH = f"../cache/{exp_name}/"
     Path(CACHE_PATH).mkdir(parents=True, exist_ok=True)
 
 
@@ -162,6 +163,44 @@ def find_best_config_by_clustering(X_cvs: List[np.ndarray]) -> Dict[str, Dict[st
     return best_config_by_clustering
 
 
+def find_best_clustering_algo(best_config_by_clustering: Dict[str, Dict[str, Any]]):
+    clustering_scores = dict()
+    for clustering_algo_name, metadata in best_config_by_clustering.items():
+        clustering_scores[clustering_algo_name] = metadata["scores"]
+    _, p_value = f_oneway(*list(clustering_scores.values()))
+    best_algo = random.choice(list(clustering_scores.values()))
+    candidate1, candidate2 = "", ""
+    t_test_p_value = -1
+    if p_value < p_value_thr:
+        sorted_scores = sorted(
+            clustering_scores,
+            key=lambda key: np.mean(clustering_scores[key]),
+            reverse=True
+        )
+        candidate1, candidate2 = sorted_scores[:2]
+        print(f"in find_best_clustering_algo: {candidate1}, {candidate2}")
+        _, t_test_p_value = ttest_rel(
+            clustering_scores[candidate1],
+            clustering_scores[candidate2]
+        )
+        best_algo_name: str = sorted_scores[0]
+        best_algo = clustering_scores[best_algo_name]
+        if t_test_p_value >= p_value_thr:
+            print(f"followed by t-test: algorithms {candidate1}, {candidate2} are the same")
+    else:
+        print(f"followed by annova: algorithms {clustering_scores.keys()} are the same")
+    results = {
+        "candidate1": candidate1,
+        "candidate2": candidate2,
+        "best_algo": best_algo,
+        "annova_p_value": p_value,
+        "ttest_p_value": t_test_p_value
+    }
+    print(f"find_best_clustering_algo - {results}")
+    with open(f"{OUTPUT_PATH}/find_best_clustering_algo.json", "w") as file:
+        json.dump(results, file)
+
+
 def find_best_cluster_algo_per_external_var(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame],
                                             best_config_by_clustering: Dict[str, Dict[str, Any]]):
     # hidden variables with the best clustering and dim_reduction
@@ -226,33 +265,34 @@ def find_best_external_var_per_clustering(X_cvs: List[np.ndarray], y_cvs: List[p
 def full_flow():
     X, y = load_data()
     X_cvs, y_cvs = generate_cvs(X, y)
-    for anomaly_algo_name, anomaly_algo in tqdm(anomaly_detection_algorithms.items()):
-        print(f"\n\n--------------{anomaly_algo_name}-------------\n")
-        start_new_experiment(anomaly_algo_name)
-        if anomaly_algo:
-            labels = anomaly_algo.fit_predict(X)
-            X_cvs, y_cvs = generate_cvs(X[labels != -1], y[labels != -1])
-        best_config_by_clustering = find_best_config_by_clustering(X_cvs)
-        best_cluster_algo_per_external_var = find_best_cluster_algo_per_external_var(X_cvs, y_cvs,
-                                                                                     best_config_by_clustering)
-        best_external_var_per_clustering = find_best_external_var_per_clustering(X_cvs, y_cvs,
-                                                                                 best_config_by_clustering)
-        print("--------best_config_by_clustering------------")
-        print(best_config_by_clustering)
-        print("\n--------best_cluster_algo_per_external_var------------")
-        print(best_cluster_algo_per_external_var)
-        print("\n--------best_external_var_per_clustering------------")
-        print(best_external_var_per_clustering)
+    best_config_by_clustering = find_best_config_by_clustering(X_cvs)
+    find_best_clustering_algo(best_config_by_clustering)
+    best_cluster_algo_per_external_var = find_best_cluster_algo_per_external_var(
+        X_cvs, y_cvs,
+        best_config_by_clustering
+    )
+    best_external_var_per_clustering = find_best_external_var_per_clustering(
+        X_cvs, y_cvs,
+        best_config_by_clustering
+    )
+    print("--------best_config_by_clustering------------")
+    print(best_config_by_clustering)
+    print("\n--------best_cluster_algo_per_external_var------------")
+    print(best_cluster_algo_per_external_var)
+    print("\n--------best_external_var_per_clustering------------")
+    print(best_external_var_per_clustering)
 
 
 def external_var_to_anomalies():
     X, y = load_data()
-    for anomaly_algo_name, anomaly_algo in tqdm(anomaly_detection_algorithms.items(), position=0, desc="anomaly", leave=False, colour='green', ncols=80):
+    for anomaly_algo_name, anomaly_algo in tqdm(anomaly_detection_algorithms.items(), position=0, desc="anomaly",
+                                                leave=False, colour='green', ncols=80):
         if anomaly_algo is None:
             continue
         scores = defaultdict(list)
         labels = anomaly_algo.fit_predict(X)
-        for external_var_name in tqdm(external_vars, position=1, desc="external_var", leave=False, colour='blue', ncols=80):
+        for external_var_name in tqdm(external_vars, position=1, desc="external_var", leave=False, colour='blue',
+                                      ncols=80):
             print(y[external_var_name].values[labels == -1])
             scores[external_var_name].append(
                 mutual_info_score(

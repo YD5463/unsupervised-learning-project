@@ -1,7 +1,7 @@
 import numpy as np
 from sklearn.decomposition import PCA, FastICA
 from sklearn.mixture import GaussianMixture
-from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering, Birch
+from sklearn.cluster import KMeans, DBSCAN, AgglomerativeClustering, Birch, BisectingKMeans
 from sklearn.manifold import TSNE, SpectralEmbedding, Isomap, MDS
 from fcmeans import FCM
 from sklearn.cluster import SpectralClustering
@@ -9,7 +9,6 @@ from sklearn.ensemble import IsolationForest
 from sklearn.svm import OneClassSVM
 from sklearn.manifold import LocallyLinearEmbedding
 from umap import UMAP
-import hdbscan
 
 
 def k_mean(k, data: np.ndarray):
@@ -48,14 +47,14 @@ def spectral_clustering(k: int, data: np.ndarray):
     return labels
 
 
-def hierarchical_dbscan(k: int, data: np.ndarray):
-    model = hdbscan.HDBSCAN()
-    model.fit(data)
-    return model.labels_
-
-
 def dbscan(k: int, data: np.ndarray):
-    model = DBSCAN(eps=((k / 10) ** 2) * data.shape[1], min_samples=5, n_jobs=-1)
+    model = DBSCAN(eps=((k / 100) ** 2) * data.shape[1], min_samples=5, n_jobs=-1)
+    labels = model.fit_predict(data)
+    return labels
+
+
+def bisecting_kmeans(k: int, data: np.ndarray):
+    model = BisectingKMeans(n_clusters=k)
     labels = model.fit_predict(data)
     return labels
 
@@ -68,6 +67,7 @@ clustering_algorithms = {
     "birch": birch,
     "spectral_clustering": spectral_clustering,
     "dbscan": dbscan,
+    "bisecting_kmeans": bisecting_kmeans
 }
 
 dim_reduction_algorithms = {
@@ -84,7 +84,7 @@ dim_reduction_algorithms = {
 
 anomaly_detection_algorithms = {
     "without_anomaly": None,
-    # "OneClassSVM": OneClassSVM(kernel="rbf", max_iter=1000, nu=0.05, gamma='scale'),
+    "OneClassSVM": OneClassSVM(kernel="rbf", nu=0.01, gamma='scale'),
     "IsolationForest": IsolationForest(random_state=0, n_jobs=-1, n_estimators=500, max_samples=256),
     "DBSCAN": DBSCAN(eps=5, min_samples=5, n_jobs=-1)
 }
