@@ -89,7 +89,7 @@ def reduction_algo_wrapper(reduction_algo_name: str, dim_num: int, cv_data: np.n
 
 def find_best_algo(scores_mapping: Dict[str, List[float]], random_when_same: bool = True) -> str:
     _, p_value = f_oneway(*list(scores_mapping.values()))
-    best_algo = random.choice(list(scores_mapping.values()))
+    best_algo = random.choice(list(scores_mapping.keys()))
     if p_value < p_value_thr:
         sorted_scores = sorted(
             scores_mapping,
@@ -101,8 +101,7 @@ def find_best_algo(scores_mapping: Dict[str, List[float]], random_when_same: boo
             scores_mapping[candidate1],
             scores_mapping[candidate2]
         )
-        best_algo_name: str = sorted_scores[0]
-        best_algo = scores_mapping[best_algo_name]
+        best_algo = sorted_scores[0]
         if t_test_p_value >= p_value_thr:
             print(f"followed by t-test: algorithms {candidate1}, {candidate2} are the same")
             if not random_when_same:
@@ -120,16 +119,16 @@ def get_silhouette_scores(
         dim_num: int, k_clusters: int
 ) -> List[float]:
     scores = []
-    for cv_id, cv_data in tqdm(enumerate(X_cvs)):
+    for cv_id, cv_data in enumerate(X_cvs):
         try:
             cv_data = reduction_algo_wrapper(reduction_algo_name, dim_num, cv_data, cv_id)
             print(f"doing {clustering_algo_name} for {cv_data.shape} by {reduction_algo_name}")
             labels = clustering_algorithms[clustering_algo_name](k_clusters, cv_data)
-            print(f"anomaly: {labels[labels == -1].size / labels.size}")
+            # print(f"anomaly: {labels[labels == -1].size / labels.size}")
             scores.append(silhouette_score(cv_data[labels != -1], labels[labels != -1]))
         except Exception as e:
             print(e)
-            scores.append(-1)
+            break
     return scores
 
 
@@ -138,10 +137,10 @@ def find_best_config_by_clustering(X_cvs: List[np.ndarray]) -> Dict[str, Dict[st
     for clustering_algo_name in clustering_algorithms.keys():
         dim_reduction_scores = dict()
         dim_reduction_meta: Dict[str, Dict[str, Any]] = dict()
-        for reduction_algo_name in tqdm(dim_reduction_algorithms.keys()):
+        for reduction_algo_name in dim_reduction_algorithms.keys():
             max_score = float("-inf")
-            for dim_num in tqdm(dimentions_options):
-                for k_clusters in tqdm(num_clusters_options):
+            for dim_num in dimentions_options:
+                for k_clusters in num_clusters_options:
                     scores = get_silhouette_scores(
                         X_cvs, clustering_algo_name,
                         reduction_algo_name, dim_num, k_clusters
@@ -266,6 +265,10 @@ def full_flow():
     X, y = load_data()
     X_cvs, y_cvs = generate_cvs(X, y)
     best_config_by_clustering = find_best_config_by_clustering(X_cvs)
+    print("--------best_config_by_clustering------------")
+    print(best_config_by_clustering)
+    with open("best_config_by_clustering.json", "w") as file:
+        json.dump(best_config_by_clustering, file)
     find_best_clustering_algo(best_config_by_clustering)
     # check_if_anomaly_detection_improves(X_cvs, )
     best_cluster_algo_per_external_var = find_best_cluster_algo_per_external_var(
@@ -276,8 +279,6 @@ def full_flow():
         X_cvs, y_cvs,
         best_config_by_clustering
     )
-    print("--------best_config_by_clustering------------")
-    print(best_config_by_clustering)
     print("\n--------best_cluster_algo_per_external_var------------")
     print(best_cluster_algo_per_external_var)
     print("\n--------best_external_var_per_clustering------------")

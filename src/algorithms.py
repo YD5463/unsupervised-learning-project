@@ -8,6 +8,7 @@ from sklearn.cluster import SpectralClustering
 from sklearn.ensemble import IsolationForest
 from sklearn.svm import OneClassSVM
 from sklearn.manifold import LocallyLinearEmbedding
+from sklearn.neighbors import NearestNeighbors
 from umap import UMAP
 
 
@@ -18,7 +19,7 @@ def k_mean(k, data: np.ndarray):
 
 
 def fuzzy_c_means(k, data: np.ndarray):
-    model = FCM(n_clusters=k, n_jobs=-1)
+    model = FCM(n_clusters=k, n_jobs=8)
     model.fit(data)
     return model.predict(data)
 
@@ -48,7 +49,12 @@ def spectral_clustering(k: int, data: np.ndarray):
 
 
 def dbscan(k: int, data: np.ndarray):
-    model = DBSCAN(eps=((k / 100) ** 2) * data.shape[1], min_samples=5, n_jobs=-1)
+    neigh = NearestNeighbors(n_neighbors=k)
+    nbrs = neigh.fit(data)
+    distances, _ = nbrs.kneighbors(data)
+    distances = np.mean(distances[:, 1:], axis=1)
+    cutoff = np.quantile(distances, q=0.98)
+    model = DBSCAN(eps=cutoff, min_samples=1, n_jobs=-1)
     labels = model.fit_predict(data)
     return labels
 
