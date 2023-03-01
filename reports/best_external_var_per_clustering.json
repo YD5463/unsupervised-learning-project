@@ -1,0 +1,9 @@
+{
+   "k_mean":"('track', 'license')",
+   "fuzzy_c_means":"('track', 'license')",
+   "gaussian_mixture":"('track', 'license')",
+   "hierarchical_clustering":"('track', 'license')",
+   "birch":"('track', 'license')",
+   "bisecting_kmeans":"('track', 'license')",
+   "dbscan":"('album', 'type')"
+}

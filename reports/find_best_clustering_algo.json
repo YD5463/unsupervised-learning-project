@@ -1,0 +1,7 @@
+{
+   "candidate1":"hierarchical_clustering",
+   "candidate2":"dbscan",
+   "best_algo":"hierarchical_clustering",
+   "annova_p_value":2.338472632674636e-06,
+   "ttest_p_value":0.00251483420544403
+}

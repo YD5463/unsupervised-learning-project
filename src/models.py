@@ -167,7 +167,7 @@ def find_best_clustering_algo(best_config_by_clustering: Dict[str, Dict[str, Any
     for clustering_algo_name, metadata in best_config_by_clustering.items():
         clustering_scores[clustering_algo_name] = metadata["scores"]
     _, p_value = f_oneway(*list(clustering_scores.values()))
-    best_algo = random.choice(list(clustering_scores.values()))
+    best_algo_name = random.choice(list(clustering_scores.keys()))
     candidate1, candidate2 = "", ""
     t_test_p_value = -1
     if p_value < p_value_thr:
@@ -183,7 +183,6 @@ def find_best_clustering_algo(best_config_by_clustering: Dict[str, Dict[str, Any
             clustering_scores[candidate2]
         )
         best_algo_name: str = sorted_scores[0]
-        best_algo = clustering_scores[best_algo_name]
         if t_test_p_value >= p_value_thr:
             print(f"followed by t-test: algorithms {candidate1}, {candidate2} are the same")
     else:
@@ -191,7 +190,7 @@ def find_best_clustering_algo(best_config_by_clustering: Dict[str, Dict[str, Any
     results = {
         "candidate1": candidate1,
         "candidate2": candidate2,
-        "best_algo": best_algo,
+        "best_algo": best_algo_name,
         "annova_p_value": p_value,
         "ttest_p_value": t_test_p_value
     }
@@ -206,9 +205,9 @@ def find_best_cluster_algo_per_external_var(X_cvs: List[np.ndarray], y_cvs: List
     best_cluster_algo_per_external_var = dict()
     for external_var_name in external_vars:
         all_mi = dict()
-        for clustering_algo_name, clustering_algo in tqdm(clustering_algorithms.items()):
+        for clustering_algo_name, best_config in tqdm(best_config_by_clustering.items()):
             scores = []
-            best_config = best_config_by_clustering[clustering_algo_name]
+            clustering_algo = clustering_algorithms[clustering_algo_name]
             for cv_id, (cv_data, cv_y_true) in tqdm(enumerate(zip(X_cvs, y_cvs))):
                 try:
                     cv_data = reduction_algo_wrapper(
@@ -236,11 +235,11 @@ def find_best_cluster_algo_per_external_var(X_cvs: List[np.ndarray], y_cvs: List
 def find_best_external_var_per_clustering(X_cvs: List[np.ndarray], y_cvs: List[pd.DataFrame],
                                           best_config_by_clustering: Dict[str, Dict[str, Any]]):
     best_external_var_per_clustering = dict()
-    for clustering_algo_name, clustering_algo in clustering_algorithms.items():
+    for clustering_algo_name, best_config in best_config_by_clustering.items():
         all_mi = dict()
         for external_var_name in tqdm(external_vars):
             scores = []
-            best_config = best_config_by_clustering[clustering_algo_name]
+            clustering_algo = clustering_algorithms[clustering_algo_name]
             for cv_id, (cv_data, cv_y_true) in tqdm(enumerate(zip(X_cvs, y_cvs))):
                 try:
                     cv_data = reduction_algo_wrapper(
@@ -264,11 +263,11 @@ def find_best_external_var_per_clustering(X_cvs: List[np.ndarray], y_cvs: List[p
 def full_flow():
     X, y = load_data()
     X_cvs, y_cvs = generate_cvs(X, y)
-    best_config_by_clustering = find_best_config_by_clustering(X_cvs)
-    print("--------best_config_by_clustering------------")
-    print(best_config_by_clustering)
-    with open("best_config_by_clustering.json", "w") as file:
-        json.dump(best_config_by_clustering, file)
+    # best_config_by_clustering = find_best_config_by_clustering(X_cvs)
+    # print("--------best_config_by_clustering------------")
+    # print(best_config_by_clustering)
+    with open("../reports/find_best_clustering_algo.json", "r") as file:
+        best_config_by_clustering = json.load(file)
     find_best_clustering_algo(best_config_by_clustering)
     # check_if_anomaly_detection_improves(X_cvs, )
     best_cluster_algo_per_external_var = find_best_cluster_algo_per_external_var(
