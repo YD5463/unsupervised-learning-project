@@ -12,3 +12,4 @@ fuzzy-c-means
 hmmlearn~=0.2.8
 scikit-learn~=1.1.3
 umap-learn
+seaborn~=0.12.2
