@@ -1,0 +1,468 @@
+"/Users/yosefdanan/Desktop/Degree/Master/Semester A/Unsuprevided-Learnning/unsupervised-learning-project/venv/bin/python" /Users/yosefdanan/Desktop/Degree/Master/Semester A/Unsuprevided-Learnning/unsupervised-learning-project/src/dynamic.py
+/Users/yosefdanan/Desktop/Degree/Master/Semester A/Unsuprevided-Learnning/unsupervised-learning-project/src/dynamic.py:58: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  y["concentration"] = y["concentration"].apply(lambda val: int(float(val)))
+/Users/yosefdanan/Desktop/Degree/Master/Semester A/Unsuprevided-Learnning/unsupervised-learning-project/src/dynamic.py:58: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  y["concentration"] = y["concentration"].apply(lambda val: int(float(val)))
+/Users/yosefdanan/Desktop/Degree/Master/Semester A/Unsuprevided-Learnning/unsupervised-learning-project/src/dynamic.py:58: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  y["concentration"] = y["concentration"].apply(lambda val: int(float(val)))
+/Users/yosefdanan/Desktop/Degree/Master/Semester A/Unsuprevided-Learnning/unsupervised-learning-project/src/dynamic.py:58: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  y["concentration"] = y["concentration"].apply(lambda val: int(float(val)))
+/Users/yosefdanan/Desktop/Degree/Master/Semester A/Unsuprevided-Learnning/unsupervised-learning-project/src/dynamic.py:58: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  y["concentration"] = y["concentration"].apply(lambda val: int(float(val)))
+/Users/yosefdanan/Desktop/Degree/Master/Semester A/Unsuprevided-Learnning/unsupervised-learning-project/src/dynamic.py:58: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  y["concentration"] = y["concentration"].apply(lambda val: int(float(val)))
+/Users/yosefdanan/Desktop/Degree/Master/Semester A/Unsuprevided-Learnning/unsupervised-learning-project/src/dynamic.py:58: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  y["concentration"] = y["concentration"].apply(lambda val: int(float(val)))
+/Users/yosefdanan/Desktop/Degree/Master/Semester A/Unsuprevided-Learnning/unsupervised-learning-project/src/dynamic.py:58: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  y["concentration"] = y["concentration"].apply(lambda val: int(float(val)))
+/Users/yosefdanan/Desktop/Degree/Master/Semester A/Unsuprevided-Learnning/unsupervised-learning-project/src/dynamic.py:58: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  y["concentration"] = y["concentration"].apply(lambda val: int(float(val)))
+/Users/yosefdanan/Desktop/Degree/Master/Semester A/Unsuprevided-Learnning/unsupervised-learning-project/src/dynamic.py:58: SettingWithCopyWarning:
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  y["concentration"] = y["concentration"].apply(lambda val: int(float(val)))
+doing k_mean for (6724, 2) by MDS
+doing k_mean for (5677, 2) by MDS
+doing k_mean for (5654, 2) by MDS
+doing k_mean for (6724, 2) by MDS
+doing k_mean for (5677, 2) by MDS
+doing k_mean for (5654, 2) by MDS
+doing k_mean for (6724, 2) by MDS
+doing k_mean for (5677, 2) by MDS
+doing k_mean for (5654, 2) by MDS
+doing k_mean for (6724, 2) by MDS
+doing k_mean for (5677, 2) by MDS
+doing k_mean for (5654, 2) by MDS
+doing k_mean for (6724, 10) by MDS
+doing k_mean for (5677, 10) by MDS
+doing k_mean for (5654, 10) by MDS
+doing k_mean for (6724, 10) by MDS
+doing k_mean for (5677, 10) by MDS
+doing k_mean for (5654, 10) by MDS
+doing k_mean for (6724, 10) by MDS
+doing k_mean for (5677, 10) by MDS
+doing k_mean for (5654, 10) by MDS
+doing k_mean for (6724, 10) by MDS
+doing k_mean for (5677, 10) by MDS
+doing k_mean for (5654, 10) by MDS
+doing k_mean for (6724, 128) by without_reduction
+doing k_mean for (5677, 128) by without_reduction
+doing k_mean for (5654, 128) by without_reduction
+doing k_mean for (6724, 128) by without_reduction
+doing k_mean for (5677, 128) by without_reduction
+doing k_mean for (5654, 128) by without_reduction
+doing k_mean for (6724, 128) by without_reduction
+doing k_mean for (5677, 128) by without_reduction
+doing k_mean for (5654, 128) by without_reduction
+doing k_mean for (6724, 128) by without_reduction
+doing k_mean for (5677, 128) by without_reduction
+doing k_mean for (5654, 128) by without_reduction
+doing k_mean for (6724, 128) by without_reduction
+doing k_mean for (5677, 128) by without_reduction
+doing k_mean for (5654, 128) by without_reduction
+doing k_mean for (6724, 128) by without_reduction
+doing k_mean for (5677, 128) by without_reduction
+doing k_mean for (5654, 128) by without_reduction
+doing k_mean for (6724, 128) by without_reduction
+doing k_mean for (5677, 128) by without_reduction
+doing k_mean for (5654, 128) by without_reduction
+doing k_mean for (6724, 128) by without_reduction
+doing k_mean for (5677, 128) by without_reduction
+doing k_mean for (5654, 128) by without_reduction
+annova value: 0.9615429585647922
+followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same
+picking for k_mean: {'mi_concentration_scores': [0.3456663978360771, 0.3767713140198197, 0.3044411571617619], 'mi_gas_type_scores': [0.19563868691713984, 0.2307964076936304, 0.29640925339509505], 'weighted_scores': [0.6215165876898558, 0.6581413236990906, 0.6464099443454199], 'avg_score': 0.642022618578122, 'dim_num': 2, 'cluster_num': 12, 'reduction_algo_name': 'without_reduction', 'annova': 0.9615429585647922, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}
+doing fuzzy_c_means for (6724, 2) by MDS
+doing fuzzy_c_means for (5677, 2) by MDS
+doing fuzzy_c_means for (5654, 2) by MDS
+doing fuzzy_c_means for (6724, 2) by MDS
+doing fuzzy_c_means for (5677, 2) by MDS
+doing fuzzy_c_means for (5654, 2) by MDS
+doing fuzzy_c_means for (6724, 2) by MDS
+doing fuzzy_c_means for (5677, 2) by MDS
+doing fuzzy_c_means for (5654, 2) by MDS
+doing fuzzy_c_means for (6724, 2) by MDS
+doing fuzzy_c_means for (5677, 2) by MDS
+doing fuzzy_c_means for (5654, 2) by MDS
+doing fuzzy_c_means for (6724, 10) by MDS
+doing fuzzy_c_means for (5677, 10) by MDS
+doing fuzzy_c_means for (5654, 10) by MDS
+doing fuzzy_c_means for (6724, 10) by MDS
+doing fuzzy_c_means for (5677, 10) by MDS
+doing fuzzy_c_means for (5654, 10) by MDS
+doing fuzzy_c_means for (6724, 10) by MDS
+doing fuzzy_c_means for (5677, 10) by MDS
+doing fuzzy_c_means for (5654, 10) by MDS
+doing fuzzy_c_means for (6724, 10) by MDS
+doing fuzzy_c_means for (5677, 10) by MDS
+doing fuzzy_c_means for (5654, 10) by MDS
+doing fuzzy_c_means for (6724, 128) by without_reduction
+doing fuzzy_c_means for (5677, 128) by without_reduction
+doing fuzzy_c_means for (5654, 128) by without_reduction
+doing fuzzy_c_means for (6724, 128) by without_reduction
+doing fuzzy_c_means for (5677, 128) by without_reduction
+doing fuzzy_c_means for (5654, 128) by without_reduction
+doing fuzzy_c_means for (6724, 128) by without_reduction
+doing fuzzy_c_means for (5677, 128) by without_reduction
+doing fuzzy_c_means for (5654, 128) by without_reduction
+doing fuzzy_c_means for (6724, 128) by without_reduction
+doing fuzzy_c_means for (5677, 128) by without_reduction
+doing fuzzy_c_means for (5654, 128) by without_reduction
+doing fuzzy_c_means for (6724, 128) by without_reduction
+doing fuzzy_c_means for (5677, 128) by without_reduction
+doing fuzzy_c_means for (5654, 128) by without_reduction
+doing fuzzy_c_means for (6724, 128) by without_reduction
+doing fuzzy_c_means for (5677, 128) by without_reduction
+doing fuzzy_c_means for (5654, 128) by without_reduction
+doing fuzzy_c_means for (6724, 128) by without_reduction
+doing fuzzy_c_means for (5677, 128) by without_reduction
+doing fuzzy_c_means for (5654, 128) by without_reduction
+doing fuzzy_c_means for (6724, 128) by without_reduction
+doing fuzzy_c_means for (5677, 128) by without_reduction
+doing fuzzy_c_means for (5654, 128) by without_reduction
+annova value: 0.7312837419243559
+followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same
+picking for fuzzy_c_means: {'mi_concentration_scores': [0.11856001325096151, 0.18053496312567235, 0.18466660270948146], 'mi_gas_type_scores': [0.32051307677914564, 0.3188074863367511, 0.14740149657480248], 'weighted_scores': [0.6425230905768711, 0.6720119078233217, 0.5559637736831828], 'avg_score': 0.6234995906944586, 'dim_num': 10, 'cluster_num': 2, 'reduction_algo_name': 'without_reduction', 'annova': 0.7312837419243559, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}
+doing gaussian_mixture for (6724, 2) by MDS
+doing gaussian_mixture for (5677, 2) by MDS
+doing gaussian_mixture for (5654, 2) by MDS
+doing gaussian_mixture for (6724, 2) by MDS
+doing gaussian_mixture for (5677, 2) by MDS
+doing gaussian_mixture for (5654, 2) by MDS
+doing gaussian_mixture for (6724, 2) by MDS
+doing gaussian_mixture for (5677, 2) by MDS
+doing gaussian_mixture for (5654, 2) by MDS
+doing gaussian_mixture for (6724, 2) by MDS
+doing gaussian_mixture for (5677, 2) by MDS
+doing gaussian_mixture for (5654, 2) by MDS
+doing gaussian_mixture for (6724, 10) by MDS
+doing gaussian_mixture for (5677, 10) by MDS
+doing gaussian_mixture for (5654, 10) by MDS
+doing gaussian_mixture for (6724, 10) by MDS
+doing gaussian_mixture for (5677, 10) by MDS
+doing gaussian_mixture for (5654, 10) by MDS
+doing gaussian_mixture for (6724, 10) by MDS
+doing gaussian_mixture for (5677, 10) by MDS
+doing gaussian_mixture for (5654, 10) by MDS
+doing gaussian_mixture for (6724, 10) by MDS
+doing gaussian_mixture for (5677, 10) by MDS
+doing gaussian_mixture for (5654, 10) by MDS
+doing gaussian_mixture for (6724, 128) by without_reduction
+doing gaussian_mixture for (5677, 128) by without_reduction
+doing gaussian_mixture for (5654, 128) by without_reduction
+doing gaussian_mixture for (6724, 128) by without_reduction
+doing gaussian_mixture for (5677, 128) by without_reduction
+doing gaussian_mixture for (5654, 128) by without_reduction
+doing gaussian_mixture for (6724, 128) by without_reduction
+doing gaussian_mixture for (5677, 128) by without_reduction
+doing gaussian_mixture for (5654, 128) by without_reduction
+doing gaussian_mixture for (6724, 128) by without_reduction
+doing gaussian_mixture for (5677, 128) by without_reduction
+doing gaussian_mixture for (5654, 128) by without_reduction
+doing gaussian_mixture for (6724, 128) by without_reduction
+doing gaussian_mixture for (5677, 128) by without_reduction
+doing gaussian_mixture for (5654, 128) by without_reduction
+doing gaussian_mixture for (6724, 128) by without_reduction
+doing gaussian_mixture for (5677, 128) by without_reduction
+doing gaussian_mixture for (5654, 128) by without_reduction
+doing gaussian_mixture for (6724, 128) by without_reduction
+doing gaussian_mixture for (5677, 128) by without_reduction
+doing gaussian_mixture for (5654, 128) by without_reduction
+doing gaussian_mixture for (6724, 128) by without_reduction
+doing gaussian_mixture for (5677, 128) by without_reduction
+doing gaussian_mixture for (5654, 128) by without_reduction
+annova value: 0.6640276775956526
+followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same
+picking for gaussian_mixture: {'mi_concentration_scores': [0.26246407829090274, 0.32745172414098433, 0.2557091418529981], 'mi_gas_type_scores': [0.30790121203906473, 0.24401486953149812, 0.22940870860381476], 'weighted_scores': [0.6179430539741415, 0.6262610881166961, 0.5667179938350255], 'avg_score': 0.6036407119752877, 'dim_num': 2, 'cluster_num': 20, 'reduction_algo_name': 'MDS', 'annova': 0.6640276775956526, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}
+doing hierarchical_clustering for (6724, 2) by MDS
+doing hierarchical_clustering for (5677, 2) by MDS
+doing hierarchical_clustering for (5654, 2) by MDS
+doing hierarchical_clustering for (6724, 2) by MDS
+doing hierarchical_clustering for (5677, 2) by MDS
+doing hierarchical_clustering for (5654, 2) by MDS
+doing hierarchical_clustering for (6724, 2) by MDS
+doing hierarchical_clustering for (5677, 2) by MDS
+doing hierarchical_clustering for (5654, 2) by MDS
+doing hierarchical_clustering for (6724, 2) by MDS
+doing hierarchical_clustering for (5677, 2) by MDS
+doing hierarchical_clustering for (5654, 2) by MDS
+doing hierarchical_clustering for (6724, 10) by MDS
+doing hierarchical_clustering for (5677, 10) by MDS
+doing hierarchical_clustering for (5654, 10) by MDS
+doing hierarchical_clustering for (6724, 10) by MDS
+doing hierarchical_clustering for (5677, 10) by MDS
+doing hierarchical_clustering for (5654, 10) by MDS
+doing hierarchical_clustering for (6724, 10) by MDS
+doing hierarchical_clustering for (5677, 10) by MDS
+doing hierarchical_clustering for (5654, 10) by MDS
+doing hierarchical_clustering for (6724, 10) by MDS
+doing hierarchical_clustering for (5677, 10) by MDS
+doing hierarchical_clustering for (5654, 10) by MDS
+doing hierarchical_clustering for (6724, 128) by without_reduction
+doing hierarchical_clustering for (5677, 128) by without_reduction
+doing hierarchical_clustering for (5654, 128) by without_reduction
+doing hierarchical_clustering for (6724, 128) by without_reduction
+doing hierarchical_clustering for (5677, 128) by without_reduction
+doing hierarchical_clustering for (5654, 128) by without_reduction
+doing hierarchical_clustering for (6724, 128) by without_reduction
+doing hierarchical_clustering for (5677, 128) by without_reduction
+doing hierarchical_clustering for (5654, 128) by without_reduction
+doing hierarchical_clustering for (6724, 128) by without_reduction
+doing hierarchical_clustering for (5677, 128) by without_reduction
+doing hierarchical_clustering for (5654, 128) by without_reduction
+doing hierarchical_clustering for (6724, 128) by without_reduction
+doing hierarchical_clustering for (5677, 128) by without_reduction
+doing hierarchical_clustering for (5654, 128) by without_reduction
+doing hierarchical_clustering for (6724, 128) by without_reduction
+doing hierarchical_clustering for (5677, 128) by without_reduction
+doing hierarchical_clustering for (5654, 128) by without_reduction
+doing hierarchical_clustering for (6724, 128) by without_reduction
+doing hierarchical_clustering for (5677, 128) by without_reduction
+doing hierarchical_clustering for (5654, 128) by without_reduction
+doing hierarchical_clustering for (6724, 128) by without_reduction
+doing hierarchical_clustering for (5677, 128) by without_reduction
+doing hierarchical_clustering for (5654, 128) by without_reduction
+annova value: 0.2156873787660964
+followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same
+picking for hierarchical_clustering: {'mi_concentration_scores': [0.35474463660712946, 0.31457904291828354, 0.29073737134790895], 'mi_gas_type_scores': [0.3885928436125336, 0.2793159511999494, 0.285940675173318], 'weighted_scores': [0.7243122594326614, 0.651849748282328, 0.6316566024819896], 'avg_score': 0.6692728700656597, 'dim_num': 2, 'cluster_num': 20, 'reduction_algo_name': 'MDS', 'annova': 0.2156873787660964, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}
+doing birch for (6724, 2) by MDS
+doing birch for (5677, 2) by MDS
+doing birch for (5654, 2) by MDS
+doing birch for (6724, 2) by MDS
+doing birch for (5677, 2) by MDS
+doing birch for (5654, 2) by MDS
+doing birch for (6724, 2) by MDS
+doing birch for (5677, 2) by MDS
+doing birch for (5654, 2) by MDS
+doing birch for (6724, 2) by MDS
+doing birch for (5677, 2) by MDS
+doing birch for (5654, 2) by MDS
+doing birch for (6724, 10) by MDS
+doing birch for (5677, 10) by MDS
+doing birch for (5654, 10) by MDS
+doing birch for (6724, 10) by MDS
+doing birch for (5677, 10) by MDS
+doing birch for (5654, 10) by MDS
+doing birch for (6724, 10) by MDS
+doing birch for (5677, 10) by MDS
+doing birch for (5654, 10) by MDS
+doing birch for (6724, 10) by MDS
+doing birch for (5677, 10) by MDS
+doing birch for (5654, 10) by MDS
+doing birch for (6724, 128) by without_reduction
+doing birch for (5677, 128) by without_reduction
+doing birch for (5654, 128) by without_reduction
+doing birch for (6724, 128) by without_reduction
+doing birch for (5677, 128) by without_reduction
+doing birch for (5654, 128) by without_reduction
+doing birch for (6724, 128) by without_reduction
+doing birch for (5677, 128) by without_reduction
+doing birch for (5654, 128) by without_reduction
+doing birch for (6724, 128) by without_reduction
+doing birch for (5677, 128) by without_reduction
+doing birch for (5654, 128) by without_reduction
+doing birch for (6724, 128) by without_reduction
+doing birch for (5677, 128) by without_reduction
+doing birch for (5654, 128) by without_reduction
+doing birch for (6724, 128) by without_reduction
+doing birch for (5677, 128) by without_reduction
+doing birch for (5654, 128) by without_reduction
+doing birch for (6724, 128) by without_reduction
+doing birch for (5677, 128) by without_reduction
+doing birch for (5654, 128) by without_reduction
+doing birch for (6724, 128) by without_reduction
+doing birch for (5677, 128) by without_reduction
+doing birch for (5654, 128) by without_reduction
+annova value: 0.4244391921043398
+followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same
+picking for birch: {'mi_concentration_scores': [0.3532724462493821, 0.3858667447613677, 0.2630307252458414], 'mi_gas_type_scores': [0.21844452528491284, 0.2889161914900805, 0.29704344351410883], 'weighted_scores': [0.6257782829187651, 0.6819432081177527, 0.6184931023114748], 'avg_score': 0.6420715311159976, 'dim_num': 10, 'cluster_num': 20, 'reduction_algo_name': 'without_reduction', 'annova': 0.4244391921043398, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}
+doing dbscan for (6724, 2) by MDS
+Fitting a model with 8009 free scalar parameters with only 6724 data points will result in a degenerate solution.
+doing dbscan for (5677, 2) by MDS
+doing dbscan for (5654, 2) by MDS
+Fitting a model with 11984 free scalar parameters with only 5654 data points will result in a degenerate solution.
+doing dbscan for (6724, 2) by MDS
+doing dbscan for (5677, 2) by MDS
+doing dbscan for (5654, 2) by MDS
+Fitting a model with 6438 free scalar parameters with only 5654 data points will result in a degenerate solution.
+doing dbscan for (6724, 2) by MDS
+doing dbscan for (5677, 2) by MDS
+doing dbscan for (5654, 2) by MDS
+doing dbscan for (6724, 2) by MDS
+doing dbscan for (5677, 2) by MDS
+doing dbscan for (5654, 2) by MDS
+doing dbscan for (6724, 10) by MDS
+doing dbscan for (5677, 10) by MDS
+doing dbscan for (5654, 10) by MDS
+Fitting a model with 8741 free scalar parameters with only 5654 data points will result in a degenerate solution.
+doing dbscan for (6724, 10) by MDS
+doing dbscan for (5677, 10) by MDS
+doing dbscan for (5654, 10) by MDS
+Fitting a model with 6250 free scalar parameters with only 5654 data points will result in a degenerate solution.
+doing dbscan for (6724, 10) by MDS
+doing dbscan for (5677, 10) by MDS
+doing dbscan for (5654, 10) by MDS
+doing dbscan for (6724, 10) by MDS
+doing dbscan for (5677, 10) by MDS
+doing dbscan for (5654, 10) by MDS
+doing dbscan for (6724, 128) by without_reduction
+Fitting a model with 7409 free scalar parameters with only 6724 data points will result in a degenerate solution.
+doing dbscan for (5677, 128) by without_reduction
+doing dbscan for (5654, 128) by without_reduction
+Fitting a model with 10997 free scalar parameters with only 5654 data points will result in a degenerate solution.
+doing dbscan for (6724, 128) by without_reduction
+doing dbscan for (5677, 128) by without_reduction
+doing dbscan for (5654, 128) by without_reduction
+Fitting a model with 6861 free scalar parameters with only 5654 data points will result in a degenerate solution.
+doing dbscan for (6724, 128) by without_reduction
+doing dbscan for (5677, 128) by without_reduction
+doing dbscan for (5654, 128) by without_reduction
+doing dbscan for (6724, 128) by without_reduction
+doing dbscan for (5677, 128) by without_reduction
+doing dbscan for (5654, 128) by without_reduction
+doing dbscan for (6724, 128) by without_reduction
+Fitting a model with 7409 free scalar parameters with only 6724 data points will result in a degenerate solution.
+doing dbscan for (5677, 128) by without_reduction
+doing dbscan for (5654, 128) by without_reduction
+Fitting a model with 10997 free scalar parameters with only 5654 data points will result in a degenerate solution.
+doing dbscan for (6724, 128) by without_reduction
+doing dbscan for (5677, 128) by without_reduction
+doing dbscan for (5654, 128) by without_reduction
+Fitting a model with 6861 free scalar parameters with only 5654 data points will result in a degenerate solution.
+doing dbscan for (6724, 128) by without_reduction
+doing dbscan for (5677, 128) by without_reduction
+doing dbscan for (5654, 128) by without_reduction
+doing dbscan for (6724, 128) by without_reduction
+doing dbscan for (5677, 128) by without_reduction
+doing dbscan for (5654, 128) by without_reduction
+annova value: 0.9577835491088977
+followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same
+picking for dbscan: {'mi_concentration_scores': [0.049381340860199005, 0.1350016184997978, 0.0502519102350565], 'mi_gas_type_scores': [0.022054239484081826, 0.26117425701371944, 0.045013814678196255], 'weighted_scores': [0.23639347880120448, 0.4740057953892213, 0.40468471959518126], 'avg_score': 0.37169466459520234, 'dim_num': 2, 'cluster_num': 20, 'reduction_algo_name': 'MDS', 'annova': 0.9577835491088977, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}
+doing bisecting_kmeans for (6724, 2) by MDS
+doing bisecting_kmeans for (5677, 2) by MDS
+doing bisecting_kmeans for (5654, 2) by MDS
+doing bisecting_kmeans for (6724, 2) by MDS
+doing bisecting_kmeans for (5677, 2) by MDS
+doing bisecting_kmeans for (5654, 2) by MDS
+doing bisecting_kmeans for (6724, 2) by MDS
+doing bisecting_kmeans for (5677, 2) by MDS
+doing bisecting_kmeans for (5654, 2) by MDS
+doing bisecting_kmeans for (6724, 2) by MDS
+doing bisecting_kmeans for (5677, 2) by MDS
+doing bisecting_kmeans for (5654, 2) by MDS
+doing bisecting_kmeans for (6724, 10) by MDS
+doing bisecting_kmeans for (5677, 10) by MDS
+doing bisecting_kmeans for (5654, 10) by MDS
+doing bisecting_kmeans for (6724, 10) by MDS
+doing bisecting_kmeans for (5677, 10) by MDS
+doing bisecting_kmeans for (5654, 10) by MDS
+doing bisecting_kmeans for (6724, 10) by MDS
+doing bisecting_kmeans for (5677, 10) by MDS
+doing bisecting_kmeans for (5654, 10) by MDS
+doing bisecting_kmeans for (6724, 10) by MDS
+doing bisecting_kmeans for (5677, 10) by MDS
+doing bisecting_kmeans for (5654, 10) by MDS
+doing bisecting_kmeans for (6724, 128) by without_reduction
+doing bisecting_kmeans for (5677, 128) by without_reduction
+doing bisecting_kmeans for (5654, 128) by without_reduction
+doing bisecting_kmeans for (6724, 128) by without_reduction
+doing bisecting_kmeans for (5677, 128) by without_reduction
+doing bisecting_kmeans for (5654, 128) by without_reduction
+doing bisecting_kmeans for (6724, 128) by without_reduction
+doing bisecting_kmeans for (5677, 128) by without_reduction
+doing bisecting_kmeans for (5654, 128) by without_reduction
+doing bisecting_kmeans for (6724, 128) by without_reduction
+doing bisecting_kmeans for (5677, 128) by without_reduction
+doing bisecting_kmeans for (5654, 128) by without_reduction
+doing bisecting_kmeans for (6724, 128) by without_reduction
+doing bisecting_kmeans for (5677, 128) by without_reduction
+doing bisecting_kmeans for (5654, 128) by without_reduction
+doing bisecting_kmeans for (6724, 128) by without_reduction
+doing bisecting_kmeans for (5677, 128) by without_reduction
+doing bisecting_kmeans for (5654, 128) by without_reduction
+doing bisecting_kmeans for (6724, 128) by without_reduction
+doing bisecting_kmeans for (5677, 128) by without_reduction
+doing bisecting_kmeans for (5654, 128) by without_reduction
+doing bisecting_kmeans for (6724, 128) by without_reduction
+doing bisecting_kmeans for (5677, 128) by without_reduction
+doing bisecting_kmeans for (5654, 128) by without_reduction
+annova value: 0.9282582263413894
+followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same
+picking for bisecting_kmeans: {'mi_concentration_scores': [0.1695771879386588, 0.15172370353174505, 0.23811001961320485], 'mi_gas_type_scores': [0.2579280512102389, 0.3277690511535939, 0.12698653346333585], 'weighted_scores': [0.6366514355789583, 0.6610137301638213, 0.5727659038265613], 'avg_score': 0.6234770231897803, 'dim_num': 10, 'cluster_num': 2, 'reduction_algo_name': 'without_reduction', 'annova': 0.9282582263413894, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}
+{'k_mean': {'mi_concentration_scores': [0.3456663978360771, 0.3767713140198197, 0.3044411571617619], 'mi_gas_type_scores': [0.19563868691713984, 0.2307964076936304, 0.29640925339509505], 'weighted_scores': [0.6215165876898558, 0.6581413236990906, 0.6464099443454199], 'avg_score': 0.642022618578122, 'dim_num': 2, 'cluster_num': 12, 'reduction_algo_name': 'without_reduction', 'annova': 0.9615429585647922, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'fuzzy_c_means': {'mi_concentration_scores': [0.11856001325096151, 0.18053496312567235, 0.18466660270948146], 'mi_gas_type_scores': [0.32051307677914564, 0.3188074863367511, 0.14740149657480248], 'weighted_scores': [0.6425230905768711, 0.6720119078233217, 0.5559637736831828], 'avg_score': 0.6234995906944586, 'dim_num': 10, 'cluster_num': 2, 'reduction_algo_name': 'without_reduction', 'annova': 0.7312837419243559, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'gaussian_mixture': {'mi_concentration_scores': [0.26246407829090274, 0.32745172414098433, 0.2557091418529981], 'mi_gas_type_scores': [0.30790121203906473, 0.24401486953149812, 0.22940870860381476], 'weighted_scores': [0.6179430539741415, 0.6262610881166961, 0.5667179938350255], 'avg_score': 0.6036407119752877, 'dim_num': 2, 'cluster_num': 20, 'reduction_algo_name': 'MDS', 'annova': 0.6640276775956526, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'hierarchical_clustering': {'mi_concentration_scores': [0.35474463660712946, 0.31457904291828354, 0.29073737134790895], 'mi_gas_type_scores': [0.3885928436125336, 0.2793159511999494, 0.285940675173318], 'weighted_scores': [0.7243122594326614, 0.651849748282328, 0.6316566024819896], 'avg_score': 0.6692728700656597, 'dim_num': 2, 'cluster_num': 20, 'reduction_algo_name': 'MDS', 'annova': 0.2156873787660964, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'birch': {'mi_concentration_scores': [0.3532724462493821, 0.3858667447613677, 0.2630307252458414], 'mi_gas_type_scores': [0.21844452528491284, 0.2889161914900805, 0.29704344351410883], 'weighted_scores': [0.6257782829187651, 0.6819432081177527, 0.6184931023114748], 'avg_score': 0.6420715311159976, 'dim_num': 10, 'cluster_num': 20, 'reduction_algo_name': 'without_reduction', 'annova': 0.4244391921043398, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'dbscan': {'mi_concentration_scores': [0.049381340860199005, 0.1350016184997978, 0.0502519102350565], 'mi_gas_type_scores': [0.022054239484081826, 0.26117425701371944, 0.045013814678196255], 'weighted_scores': [0.23639347880120448, 0.4740057953892213, 0.40468471959518126], 'avg_score': 0.37169466459520234, 'dim_num': 2, 'cluster_num': 20, 'reduction_algo_name': 'MDS', 'annova': 0.9577835491088977, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'bisecting_kmeans': {'mi_concentration_scores': [0.1695771879386588, 0.15172370353174505, 0.23811001961320485], 'mi_gas_type_scores': [0.2579280512102389, 0.3277690511535939, 0.12698653346333585], 'weighted_scores': [0.6366514355789583, 0.6610137301638213, 0.5727659038265613], 'avg_score': 0.6234770231897803, 'dim_num': 10, 'cluster_num': 2, 'reduction_algo_name': 'without_reduction', 'annova': 0.9282582263413894, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}}
+annova value: 0.0005415652574012422
+t_test value: 0.5463888830159037
+followed by t-test: algorithms hierarchical_clustering, birch are the same
+---------final_result_weighted_scores--------
+{'best_algo_name': 'hierarchical_clustering', 'annova': 0.0005415652574012422, 't_test_p_value': 0.5463888830159037, 'config': {'mi_concentration_scores': [0.35474463660712946, 0.31457904291828354, 0.29073737134790895], 'mi_gas_type_scores': [0.3885928436125336, 0.2793159511999494, 0.285940675173318], 'weighted_scores': [0.7243122594326614, 0.651849748282328, 0.6316566024819896], 'avg_score': 0.6692728700656597, 'dim_num': 2, 'cluster_num': 20, 'reduction_algo_name': 'MDS', 'annova': 0.2156873787660964, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'msg': 'followed by t-test: algorithms hierarchical_clustering, birch are the same', 'all_config': {'k_mean': {'mi_concentration_scores': [0.3456663978360771, 0.3767713140198197, 0.3044411571617619], 'mi_gas_type_scores': [0.19563868691713984, 0.2307964076936304, 0.29640925339509505], 'weighted_scores': [0.6215165876898558, 0.6581413236990906, 0.6464099443454199], 'avg_score': 0.642022618578122, 'dim_num': 2, 'cluster_num': 12, 'reduction_algo_name': 'without_reduction', 'annova': 0.9615429585647922, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'fuzzy_c_means': {'mi_concentration_scores': [0.11856001325096151, 0.18053496312567235, 0.18466660270948146], 'mi_gas_type_scores': [0.32051307677914564, 0.3188074863367511, 0.14740149657480248], 'weighted_scores': [0.6425230905768711, 0.6720119078233217, 0.5559637736831828], 'avg_score': 0.6234995906944586, 'dim_num': 10, 'cluster_num': 2, 'reduction_algo_name': 'without_reduction', 'annova': 0.7312837419243559, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'gaussian_mixture': {'mi_concentration_scores': [0.26246407829090274, 0.32745172414098433, 0.2557091418529981], 'mi_gas_type_scores': [0.30790121203906473, 0.24401486953149812, 0.22940870860381476], 'weighted_scores': [0.6179430539741415, 0.6262610881166961, 0.5667179938350255], 'avg_score': 0.6036407119752877, 'dim_num': 2, 'cluster_num': 20, 'reduction_algo_name': 'MDS', 'annova': 0.6640276775956526, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'hierarchical_clustering': {'mi_concentration_scores': [0.35474463660712946, 0.31457904291828354, 0.29073737134790895], 'mi_gas_type_scores': [0.3885928436125336, 0.2793159511999494, 0.285940675173318], 'weighted_scores': [0.7243122594326614, 0.651849748282328, 0.6316566024819896], 'avg_score': 0.6692728700656597, 'dim_num': 2, 'cluster_num': 20, 'reduction_algo_name': 'MDS', 'annova': 0.2156873787660964, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'birch': {'mi_concentration_scores': [0.3532724462493821, 0.3858667447613677, 0.2630307252458414], 'mi_gas_type_scores': [0.21844452528491284, 0.2889161914900805, 0.29704344351410883], 'weighted_scores': [0.6257782829187651, 0.6819432081177527, 0.6184931023114748], 'avg_score': 0.6420715311159976, 'dim_num': 10, 'cluster_num': 20, 'reduction_algo_name': 'without_reduction', 'annova': 0.4244391921043398, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'dbscan': {'mi_concentration_scores': [0.049381340860199005, 0.1350016184997978, 0.0502519102350565], 'mi_gas_type_scores': [0.022054239484081826, 0.26117425701371944, 0.045013814678196255], 'weighted_scores': [0.23639347880120448, 0.4740057953892213, 0.40468471959518126], 'avg_score': 0.37169466459520234, 'dim_num': 2, 'cluster_num': 20, 'reduction_algo_name': 'MDS', 'annova': 0.9577835491088977, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'bisecting_kmeans': {'mi_concentration_scores': [0.1695771879386588, 0.15172370353174505, 0.23811001961320485], 'mi_gas_type_scores': [0.2579280512102389, 0.3277690511535939, 0.12698653346333585], 'weighted_scores': [0.6366514355789583, 0.6610137301638213, 0.5727659038265613], 'avg_score': 0.6234770231897803, 'dim_num': 10, 'cluster_num': 2, 'reduction_algo_name': 'without_reduction', 'annova': 0.9282582263413894, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}}}
+annova value: 0.1666108964477636
+followed by annova: algorithms dict_keys(['k_mean', 'fuzzy_c_means', 'gaussian_mixture', 'hierarchical_clustering', 'birch', 'dbscan', 'bisecting_kmeans']) are the same
+---------final_result_mi_gas_type_scores--------
+{'best_algo_name': 'fuzzy_c_means', 'annova': 0.1666108964477636, 't_test_p_value': -1, 'config': {'mi_concentration_scores': [0.11856001325096151, 0.18053496312567235, 0.18466660270948146], 'mi_gas_type_scores': [0.32051307677914564, 0.3188074863367511, 0.14740149657480248], 'weighted_scores': [0.6425230905768711, 0.6720119078233217, 0.5559637736831828], 'avg_score': 0.6234995906944586, 'dim_num': 10, 'cluster_num': 2, 'reduction_algo_name': 'without_reduction', 'annova': 0.7312837419243559, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'msg': "followed by annova: algorithms dict_keys(['k_mean', 'fuzzy_c_means', 'gaussian_mixture', 'hierarchical_clustering', 'birch', 'dbscan', 'bisecting_kmeans']) are the same", 'all_config': {'k_mean': {'mi_concentration_scores': [0.3456663978360771, 0.3767713140198197, 0.3044411571617619], 'mi_gas_type_scores': [0.19563868691713984, 0.2307964076936304, 0.29640925339509505], 'weighted_scores': [0.6215165876898558, 0.6581413236990906, 0.6464099443454199], 'avg_score': 0.642022618578122, 'dim_num': 2, 'cluster_num': 12, 'reduction_algo_name': 'without_reduction', 'annova': 0.9615429585647922, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'fuzzy_c_means': {'mi_concentration_scores': [0.11856001325096151, 0.18053496312567235, 0.18466660270948146], 'mi_gas_type_scores': [0.32051307677914564, 0.3188074863367511, 0.14740149657480248], 'weighted_scores': [0.6425230905768711, 0.6720119078233217, 0.5559637736831828], 'avg_score': 0.6234995906944586, 'dim_num': 10, 'cluster_num': 2, 'reduction_algo_name': 'without_reduction', 'annova': 0.7312837419243559, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'gaussian_mixture': {'mi_concentration_scores': [0.26246407829090274, 0.32745172414098433, 0.2557091418529981], 'mi_gas_type_scores': [0.30790121203906473, 0.24401486953149812, 0.22940870860381476], 'weighted_scores': [0.6179430539741415, 0.6262610881166961, 0.5667179938350255], 'avg_score': 0.6036407119752877, 'dim_num': 2, 'cluster_num': 20, 'reduction_algo_name': 'MDS', 'annova': 0.6640276775956526, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'hierarchical_clustering': {'mi_concentration_scores': [0.35474463660712946, 0.31457904291828354, 0.29073737134790895], 'mi_gas_type_scores': [0.3885928436125336, 0.2793159511999494, 0.285940675173318], 'weighted_scores': [0.7243122594326614, 0.651849748282328, 0.6316566024819896], 'avg_score': 0.6692728700656597, 'dim_num': 2, 'cluster_num': 20, 'reduction_algo_name': 'MDS', 'annova': 0.2156873787660964, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'birch': {'mi_concentration_scores': [0.3532724462493821, 0.3858667447613677, 0.2630307252458414], 'mi_gas_type_scores': [0.21844452528491284, 0.2889161914900805, 0.29704344351410883], 'weighted_scores': [0.6257782829187651, 0.6819432081177527, 0.6184931023114748], 'avg_score': 0.6420715311159976, 'dim_num': 10, 'cluster_num': 20, 'reduction_algo_name': 'without_reduction', 'annova': 0.4244391921043398, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'dbscan': {'mi_concentration_scores': [0.049381340860199005, 0.1350016184997978, 0.0502519102350565], 'mi_gas_type_scores': [0.022054239484081826, 0.26117425701371944, 0.045013814678196255], 'weighted_scores': [0.23639347880120448, 0.4740057953892213, 0.40468471959518126], 'avg_score': 0.37169466459520234, 'dim_num': 2, 'cluster_num': 20, 'reduction_algo_name': 'MDS', 'annova': 0.9577835491088977, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'bisecting_kmeans': {'mi_concentration_scores': [0.1695771879386588, 0.15172370353174505, 0.23811001961320485], 'mi_gas_type_scores': [0.2579280512102389, 0.3277690511535939, 0.12698653346333585], 'weighted_scores': [0.6366514355789583, 0.6610137301638213, 0.5727659038265613], 'avg_score': 0.6234770231897803, 'dim_num': 10, 'cluster_num': 2, 'reduction_algo_name': 'without_reduction', 'annova': 0.9282582263413894, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}}}
+annova value: 1.6413993432154753e-05
+t_test value: 0.668811979722572
+followed by t-test: algorithms k_mean, birch are the same
+---------final_result_mi_concentration_scores--------
+{'best_algo_name': 'k_mean', 'annova': 1.6413993432154753e-05, 't_test_p_value': 0.668811979722572, 'config': {'mi_concentration_scores': [0.3456663978360771, 0.3767713140198197, 0.3044411571617619], 'mi_gas_type_scores': [0.19563868691713984, 0.2307964076936304, 0.29640925339509505], 'weighted_scores': [0.6215165876898558, 0.6581413236990906, 0.6464099443454199], 'avg_score': 0.642022618578122, 'dim_num': 2, 'cluster_num': 12, 'reduction_algo_name': 'without_reduction', 'annova': 0.9615429585647922, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'msg': 'followed by t-test: algorithms k_mean, birch are the same', 'all_config': {'k_mean': {'mi_concentration_scores': [0.3456663978360771, 0.3767713140198197, 0.3044411571617619], 'mi_gas_type_scores': [0.19563868691713984, 0.2307964076936304, 0.29640925339509505], 'weighted_scores': [0.6215165876898558, 0.6581413236990906, 0.6464099443454199], 'avg_score': 0.642022618578122, 'dim_num': 2, 'cluster_num': 12, 'reduction_algo_name': 'without_reduction', 'annova': 0.9615429585647922, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'fuzzy_c_means': {'mi_concentration_scores': [0.11856001325096151, 0.18053496312567235, 0.18466660270948146], 'mi_gas_type_scores': [0.32051307677914564, 0.3188074863367511, 0.14740149657480248], 'weighted_scores': [0.6425230905768711, 0.6720119078233217, 0.5559637736831828], 'avg_score': 0.6234995906944586, 'dim_num': 10, 'cluster_num': 2, 'reduction_algo_name': 'without_reduction', 'annova': 0.7312837419243559, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'gaussian_mixture': {'mi_concentration_scores': [0.26246407829090274, 0.32745172414098433, 0.2557091418529981], 'mi_gas_type_scores': [0.30790121203906473, 0.24401486953149812, 0.22940870860381476], 'weighted_scores': [0.6179430539741415, 0.6262610881166961, 0.5667179938350255], 'avg_score': 0.6036407119752877, 'dim_num': 2, 'cluster_num': 20, 'reduction_algo_name': 'MDS', 'annova': 0.6640276775956526, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'hierarchical_clustering': {'mi_concentration_scores': [0.35474463660712946, 0.31457904291828354, 0.29073737134790895], 'mi_gas_type_scores': [0.3885928436125336, 0.2793159511999494, 0.285940675173318], 'weighted_scores': [0.7243122594326614, 0.651849748282328, 0.6316566024819896], 'avg_score': 0.6692728700656597, 'dim_num': 2, 'cluster_num': 20, 'reduction_algo_name': 'MDS', 'annova': 0.2156873787660964, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'birch': {'mi_concentration_scores': [0.3532724462493821, 0.3858667447613677, 0.2630307252458414], 'mi_gas_type_scores': [0.21844452528491284, 0.2889161914900805, 0.29704344351410883], 'weighted_scores': [0.6257782829187651, 0.6819432081177527, 0.6184931023114748], 'avg_score': 0.6420715311159976, 'dim_num': 10, 'cluster_num': 20, 'reduction_algo_name': 'without_reduction', 'annova': 0.4244391921043398, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'dbscan': {'mi_concentration_scores': [0.049381340860199005, 0.1350016184997978, 0.0502519102350565], 'mi_gas_type_scores': [0.022054239484081826, 0.26117425701371944, 0.045013814678196255], 'weighted_scores': [0.23639347880120448, 0.4740057953892213, 0.40468471959518126], 'avg_score': 0.37169466459520234, 'dim_num': 2, 'cluster_num': 20, 'reduction_algo_name': 'MDS', 'annova': 0.9577835491088977, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}, 'bisecting_kmeans': {'mi_concentration_scores': [0.1695771879386588, 0.15172370353174505, 0.23811001961320485], 'mi_gas_type_scores': [0.2579280512102389, 0.3277690511535939, 0.12698653346333585], 'weighted_scores': [0.6366514355789583, 0.6610137301638213, 0.5727659038265613], 'avg_score': 0.6234770231897803, 'dim_num': 10, 'cluster_num': 2, 'reduction_algo_name': 'without_reduction', 'annova': 0.9282582263413894, 't-test': -1, 'msg': "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"}}}
+-----------k_mean-------
+annova value: 0.0006630857575359687
+t_test value: 0.00485112231018997
+-----------fuzzy_c_means-------
+annova value: 0.004715885066062709
+t_test value: 0.029958181254324413
+-----------gaussian_mixture-------
+annova value: 0.0023269980062636765
+t_test value: 0.019903683191234686
+-----------hierarchical_clustering-------
+annova value: 0.014481925973092778
+t_test value: 0.0023438881273794817
+-----------birch-------
+annova value: 0.0002627784372518337
+t_test value: 0.004470405492367392
+-----------dbscan-------
+annova value: 0.10130321390418512
+followed by annova: algorithms dict_keys(['gas_type', 'concentration']) are the same
+-----------bisecting_kmeans-------
+annova value: 0.002485787313559388
+t_test value: 0.022341088106809525
+{'k_mean': {'scores': [0.8678148045232215, 1.0430772047213863, 0.884185198716805], 'best_var': 'concentration', 'anova': 0.0006630857575359687, 't_test': 0.00485112231018997, 'msg': ''}, 'fuzzy_c_means': {'scores': [0.9857992796386219, 0.9829041456812693, 0.9825021094509481], 'best_var': 'concentration', 'anova': 0.004715885066062709, 't_test': 0.029958181254324413, 'msg': ''}, 'gaussian_mixture': {'scores': [0.8624163941239658, 0.9299686262190344, 0.8960164388224823], 'best_var': 'concentration', 'anova': 0.0023269980062636765, 't_test': 0.019903683191234686, 'msg': ''}, 'hierarchical_clustering': {'scores': [1.0190501930099303, 1.4258192217734256, 0.9640097667162317], 'best_var': 'concentration', 'anova': 0.014481925973092778, 't_test': 0.0023438881273794817, 'msg': ''}, 'birch': {'scores': [0.9799779404243797, 0.9760958784125455, 0.9494605938878593], 'best_var': 'concentration', 'anova': 0.0002627784372518337, 't_test': 0.004470405492367392, 'msg': ''}, 'dbscan': {'scores': [0.09754037384824103, 0.025257657137343785, 0.055447741259477684], 'best_var': 'concentration', 'anova': 0.10130321390418512, 't_test': -1, 'msg': "followed by annova: algorithms dict_keys(['gas_type', 'concentration']) are the same"}, 'bisecting_kmeans': {'scores': [0.9715631884348426, 0.8140153334059661, 0.9275227744305192], 'best_var': 'concentration', 'anova': 0.002485787313559388, 't_test': 0.022341088106809525, 'msg': ''}}
+
+Process finished with exit code 0

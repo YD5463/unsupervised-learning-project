@@ -59,11 +59,12 @@ def generate_cvs(X: np.ndarray, y: pd.DataFrame, num_of_cvs, cv_size) -> Tuple[L
     return X_cvs, y_cvs
 
 
-def find_best_algo(scores_mapping: Dict[Any, List[float]]) -> Tuple[Any, float, float]:
+def find_best_algo(scores_mapping: Dict[Any, List[float]]) -> Tuple[Any, float, float, str]:
     _, p_value = f_oneway(*list(scores_mapping.values()))
     best_algo = random.choice(list(scores_mapping.keys()))
     t_test_p_value = -1
     print(f"annova value: {p_value}")
+    msg = ""
     if p_value < P_VALUE_THR:
         sorted_scores = sorted(
             scores_mapping,
@@ -78,10 +79,12 @@ def find_best_algo(scores_mapping: Dict[Any, List[float]]) -> Tuple[Any, float, 
         print(f"t_test value: {t_test_p_value}")
         best_algo = sorted_scores[0]
         if t_test_p_value >= P_VALUE_THR:
-            print(f"followed by t-test: algorithms {candidate1}, {candidate2} are the same")
+            msg = f"followed by t-test: algorithms {candidate1}, {candidate2} are the same"
+            print(msg)
     else:
-        print(f"followed by annova: algorithms {scores_mapping.keys()} are the same")
-    return best_algo, p_value, t_test_p_value
+        msg = f"followed by annova: algorithms {scores_mapping.keys()} are the same"
+        print(msg)
+    return best_algo, p_value, t_test_p_value, msg
 
 
 def external_var_to_anomalies(X_cvs, y_cvs, external_vars):

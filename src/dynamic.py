@@ -8,9 +8,10 @@ import numpy as np
 import pandas as pd
 from hmmlearn.hmm import CategoricalHMM
 from sklearn.metrics import normalized_mutual_info_score, mutual_info_score, silhouette_score
+from tqdm import tqdm
 
-from src.flows_utils.algorithms import dim_reduction_algorithms, clustering_algorithms
-from src.flows_utils.utils import reduction_algo_wrapper, find_best_algo, generate_cvs, external_var_to_anomalies
+from src.flows_utils.algorithms import dim_reduction_algorithms, clustering_algorithms, anomaly_detection_algorithms
+from src.flows_utils.utils import reduction_algo_wrapper, find_best_algo
 from pathlib import Path
 
 from src.vis.visualizations import anomaly_external_var_to_mi
@@ -23,6 +24,16 @@ NUM_CLUSTERS_OPTIONS = [2, 6, 12, 20]
 NUM_OF_CVS = 3
 # CV_SIZE = 2600
 DATA_PATH = "data/driftdataset"
+
+random.seed(10)
+cvs = [[
+    random.randint(0, 9),
+    random.randint(0, 9),
+    random.randint(0, 9),
+    random.randint(0, 9)
+]
+    for i in range(NUM_OF_CVS)
+]
 
 
 def load_dynamic_dataset():
@@ -51,7 +62,7 @@ def load_dynamic_dataset():
     return X_cvs, y_cvs
 
 
-def update_scores(labels: np.ndarray, cv_data, cv_y: pd.DataFrame,lengths, scores: Dict[str, List[float]]):
+def update_scores(labels: np.ndarray, cv_data, cv_y: pd.DataFrame, lengths, scores: Dict[str, List[float]]):
     sil_score = silhouette_score(cv_data, labels)
     model = CategoricalHMM(n_components=cv_y["gas_type"].nunique()).fit(labels.reshape(-1, 1), lengths=lengths)
     hidden_states_gas_type = model.predict(labels.reshape(-1, 1))
@@ -83,13 +94,7 @@ def main():
             for dim_num in DIMENTIONS_OPTIONS:
                 for k_clusters in NUM_CLUSTERS_OPTIONS:
                     scores = defaultdict(list)
-                    for cv_id in range(NUM_OF_CVS):
-                        in_index = [
-                            random.randint(0, 9),
-                            random.randint(0, 9),
-                            random.randint(0, 9),
-                            random.randint(0, 9)
-                        ]
+                    for cv_id, in_index in enumerate(cvs):
                         cv_data = np.concatenate([X_cvs[i] for i in range(len(X_cvs)) if i in in_index])
                         cv_y = pd.concat([y_cvs[i] for i in range(len(y_cvs)) if i in in_index])
                         lengths = [X_cvs[i].shape[0] for i in range(len(X_cvs)) if i in in_index]
@@ -111,13 +116,14 @@ def main():
                             "cluster_num": k_clusters,
                             "reduction_algo_name": reduction_algo_name
                         }
-        best_algo_name, p_value, t_test_p_value = find_best_algo({
+        best_algo_name, p_value, t_test_p_value, msg = find_best_algo({
             key: value["weighted_scores"] for key, value in dim_reduction_meta.items()
         })
         best_config_by_clustering[clustering_algo_name] = {
             **dim_reduction_meta[best_algo_name],
             "annova": p_value,
-            "t-test": t_test_p_value
+            "t-test": t_test_p_value,
+            "msg": msg
         }
         print(f"picking for {clustering_algo_name}: {best_config_by_clustering[clustering_algo_name]}")
     print(best_config_by_clustering)
@@ -136,7 +142,10 @@ def find_best_external_var_per_clustering(X_cvs: List[np.ndarray], y_cvs: List[p
         for external_var_name in EXTERNAL_VARS:
             scores = []
             clustering_algo = clustering_algorithms[clustering_algo_name]
-            for cv_id, (cv_data, cv_y) in enumerate(zip(X_cvs, y_cvs)):
+            for cv_id, in_index in enumerate(cvs):
+                cv_data = np.concatenate([X_cvs[i] for i in range(len(X_cvs)) if i in in_index])
+                cv_y = pd.concat([y_cvs[i] for i in range(len(y_cvs)) if i in in_index])
+                lengths = [X_cvs[i].shape[0] for i in range(len(X_cvs)) if i in in_index]
                 try:
                     cv_data = reduction_algo_wrapper(
                         best_config["reduction_algo_name"],
@@ -144,19 +153,25 @@ def find_best_external_var_per_clustering(X_cvs: List[np.ndarray], y_cvs: List[p
                         cv_data, cv_id, CACHE_PATH
                     )
                     labels = clustering_algo(cv_y[external_var_name].nunique(), cv_data)
-                    model = CategoricalHMM(n_components=cv_y[external_var_name].nunique()).fit(labels.reshape(-1, 1))
+                    model = CategoricalHMM(
+                        n_components=cv_y[external_var_name].nunique()
+                    ).fit(
+                        labels.reshape(-1, 1),
+                        lengths=lengths
+                    )
                     hidden_states = model.predict(labels.reshape(-1, 1))
                     scores.append(mutual_info_score(hidden_states, cv_y[external_var_name].values))
                 except Exception as e:
                     print(e)
                     scores.append(-1)
             all_mi[external_var_name] = scores
-        best_var, p_value, t_test_p_value = find_best_algo(all_mi)
+        best_var, p_value, t_test_p_value, msg = find_best_algo(all_mi)
         best_external_var_per_clustering[clustering_algo_name] = {
             "scores": all_mi[best_var],
             "best_var": best_var,
             "anova": p_value,
-            "t_test": t_test_p_value
+            "t_test": t_test_p_value,
+            "msg": msg
         }
     print(best_external_var_per_clustering)
     with open(f"best_external_var_per_clustering_dynamic.json", "w") as file:
@@ -168,18 +183,53 @@ def best_config_by(key: str, best_config_by_clustering: Dict):
     clustering_scores = dict()
     for clustering_algo_name, metadata in best_config_by_clustering.items():
         clustering_scores[clustering_algo_name] = metadata[key]
-    best_algo_name, p_value, t_test_p_value = find_best_algo(clustering_scores)
+    best_algo_name, p_value, t_test_p_value, msg = find_best_algo(clustering_scores)
     result = {
         "best_algo_name": best_algo_name,
         "annova": p_value,
         "t_test_p_value": t_test_p_value,
         "config": best_config_by_clustering[best_algo_name],
+        "msg": msg,
         "all_config": best_config_by_clustering
     }
     print(f"---------final_result_{key}--------")
     print(result)
     with open(f"final_result_{key}.json", "w") as file:
         json.dump(result, file)
+
+
+def external_var_to_anomalies(X_cvs, y_cvs, external_vars):
+    results = list()
+    for anomaly_algo_name, anomaly_algo in tqdm(anomaly_detection_algorithms.items()):
+        if anomaly_algo is None:
+            continue
+        scores = defaultdict(list)
+        for cv_id, in_index in enumerate(cvs):
+            cv_data = np.concatenate([X_cvs[i] for i in range(len(X_cvs)) if i in in_index])
+            cv_y = pd.concat([y_cvs[i] for i in range(len(y_cvs)) if i in in_index])
+            lengths = [X_cvs[i].shape[0] for i in range(len(X_cvs)) if i in in_index]
+            labels = anomaly_algo.fit_predict(cv_data)
+            for external_var_name in external_vars:
+                model = CategoricalHMM(n_components=cv_y[external_var_name].nunique()).fit(
+                    labels.reshape(-1, 1),
+                    lengths=lengths
+                )
+                labels = model.predict(labels.reshape(-1, 1))
+                scores[external_var_name].append(
+                    mutual_info_score(
+                        labels,
+                        cv_y[external_var_name]
+                    )
+                )
+
+        for external_var_name, external_var_scores in scores.items():
+            results.append({
+                "algo_name": anomaly_algo_name,
+                "external_var": external_var_name,
+                "MI": np.mean(external_var_scores)
+            })
+
+    return pd.DataFrame(results)
 
 
 def main2():
@@ -195,6 +245,5 @@ def main2():
 #
 
 if __name__ == '__main__':
-    main()
+    main2()
     # main3()
-
