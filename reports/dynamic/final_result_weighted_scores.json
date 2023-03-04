@@ -1,0 +1,200 @@
+{
+  "best_algo_name": "hierarchical_clustering",
+  "annova": 0.0005415652574012422,
+  "t_test_p_value": 0.5463888830159037,
+  "config": {
+    "mi_concentration_scores": [
+      0.35474463660712946,
+      0.31457904291828354,
+      0.29073737134790895
+    ],
+    "mi_gas_type_scores": [
+      0.3885928436125336,
+      0.2793159511999494,
+      0.285940675173318
+    ],
+    "weighted_scores": [
+      0.7243122594326614,
+      0.651849748282328,
+      0.6316566024819896
+    ],
+    "avg_score": 0.6692728700656597,
+    "dim_num": 2,
+    "cluster_num": 20,
+    "reduction_algo_name": "MDS",
+    "annova": 0.2156873787660964,
+    "t-test": -1,
+    "msg": "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"
+  },
+  "msg": "followed by t-test: algorithms hierarchical_clustering, birch are the same",
+  "all_config": {
+    "k_mean": {
+      "mi_concentration_scores": [
+        0.3456663978360771,
+        0.3767713140198197,
+        0.3044411571617619
+      ],
+      "mi_gas_type_scores": [
+        0.19563868691713984,
+        0.2307964076936304,
+        0.29640925339509505
+      ],
+      "weighted_scores": [
+        0.6215165876898558,
+        0.6581413236990906,
+        0.6464099443454199
+      ],
+      "avg_score": 0.642022618578122,
+      "dim_num": 2,
+      "cluster_num": 12,
+      "reduction_algo_name": "without_reduction",
+      "annova": 0.9615429585647922,
+      "t-test": -1,
+      "msg": "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"
+    },
+    "fuzzy_c_means": {
+      "mi_concentration_scores": [
+        0.11856001325096151,
+        0.18053496312567235,
+        0.18466660270948146
+      ],
+      "mi_gas_type_scores": [
+        0.32051307677914564,
+        0.3188074863367511,
+        0.14740149657480248
+      ],
+      "weighted_scores": [
+        0.6425230905768711,
+        0.6720119078233217,
+        0.5559637736831828
+      ],
+      "avg_score": 0.6234995906944586,
+      "dim_num": 10,
+      "cluster_num": 2,
+      "reduction_algo_name": "without_reduction",
+      "annova": 0.7312837419243559,
+      "t-test": -1,
+      "msg": "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"
+    },
+    "gaussian_mixture": {
+      "mi_concentration_scores": [
+        0.26246407829090274,
+        0.32745172414098433,
+        0.2557091418529981
+      ],
+      "mi_gas_type_scores": [
+        0.30790121203906473,
+        0.24401486953149812,
+        0.22940870860381476
+      ],
+      "weighted_scores": [
+        0.6179430539741415,
+        0.6262610881166961,
+        0.5667179938350255
+      ],
+      "avg_score": 0.6036407119752877,
+      "dim_num": 2,
+      "cluster_num": 20,
+      "reduction_algo_name": "MDS",
+      "annova": 0.6640276775956526,
+      "t-test": -1,
+      "msg": "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"
+    },
+    "hierarchical_clustering": {
+      "mi_concentration_scores": [
+        0.35474463660712946,
+        0.31457904291828354,
+        0.29073737134790895
+      ],
+      "mi_gas_type_scores": [
+        0.3885928436125336,
+        0.2793159511999494,
+        0.285940675173318
+      ],
+      "weighted_scores": [
+        0.7243122594326614,
+        0.651849748282328,
+        0.6316566024819896
+      ],
+      "avg_score": 0.6692728700656597,
+      "dim_num": 2,
+      "cluster_num": 20,
+      "reduction_algo_name": "MDS",
+      "annova": 0.2156873787660964,
+      "t-test": -1,
+      "msg": "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"
+    },
+    "birch": {
+      "mi_concentration_scores": [
+        0.3532724462493821,
+        0.3858667447613677,
+        0.2630307252458414
+      ],
+      "mi_gas_type_scores": [
+        0.21844452528491284,
+        0.2889161914900805,
+        0.29704344351410883
+      ],
+      "weighted_scores": [
+        0.6257782829187651,
+        0.6819432081177527,
+        0.6184931023114748
+      ],
+      "avg_score": 0.6420715311159976,
+      "dim_num": 10,
+      "cluster_num": 20,
+      "reduction_algo_name": "without_reduction",
+      "annova": 0.4244391921043398,
+      "t-test": -1,
+      "msg": "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"
+    },
+    "dbscan": {
+      "mi_concentration_scores": [
+        0.049381340860199005,
+        0.1350016184997978,
+        0.0502519102350565
+      ],
+      "mi_gas_type_scores": [
+        0.022054239484081826,
+        0.26117425701371944,
+        0.045013814678196255
+      ],
+      "weighted_scores": [
+        0.23639347880120448,
+        0.4740057953892213,
+        0.40468471959518126
+      ],
+      "avg_score": 0.37169466459520234,
+      "dim_num": 2,
+      "cluster_num": 20,
+      "reduction_algo_name": "MDS",
+      "annova": 0.9577835491088977,
+      "t-test": -1,
+      "msg": "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"
+    },
+    "bisecting_kmeans": {
+      "mi_concentration_scores": [
+        0.1695771879386588,
+        0.15172370353174505,
+        0.23811001961320485
+      ],
+      "mi_gas_type_scores": [
+        0.2579280512102389,
+        0.3277690511535939,
+        0.12698653346333585
+      ],
+      "weighted_scores": [
+        0.6366514355789583,
+        0.6610137301638213,
+        0.5727659038265613
+      ],
+      "avg_score": 0.6234770231897803,
+      "dim_num": 10,
+      "cluster_num": 2,
+      "reduction_algo_name": "without_reduction",
+      "annova": 0.9282582263413894,
+      "t-test": -1,
+      "msg": "followed by annova: algorithms dict_keys(['MDS', 'without_reduction']) are the same"
+    }
+  }
+}
