@@ -1,12 +1,15 @@
 import os
 import pickle
 import random
+from collections import defaultdict
 from pathlib import Path
 from typing import List, Tuple, Any, Dict
 import numpy as np
 import pandas as pd
-from sklearn.metrics import silhouette_score
-from src.flows_utils.algorithms import dim_reduction_algorithms, clustering_algorithms
+from sklearn.metrics import silhouette_score, mutual_info_score
+from tqdm import tqdm
+
+from src.flows_utils.algorithms import dim_reduction_algorithms, clustering_algorithms, anomaly_detection_algorithms
 from scipy.stats import f_oneway
 from scipy.stats import ttest_rel
 
@@ -79,3 +82,29 @@ def find_best_algo(scores_mapping: Dict[Any, List[float]]) -> Tuple[Any, float, 
     else:
         print(f"followed by annova: algorithms {scores_mapping.keys()} are the same")
     return best_algo, p_value, t_test_p_value
+
+
+def external_var_to_anomalies(X_cvs, y_cvs, external_vars):
+    results = list()
+    for anomaly_algo_name, anomaly_algo in tqdm(anomaly_detection_algorithms.items()):
+        if anomaly_algo is None:
+            continue
+        scores = defaultdict(list)
+        for X, y in zip(X_cvs, y_cvs):
+            labels = anomaly_algo.fit_predict(X)
+            for external_var_name in external_vars:
+                scores[external_var_name].append(
+                    mutual_info_score(
+                        labels,
+                        y[external_var_name]
+                    )
+                )
+
+        for external_var_name, external_var_scores in scores.items():
+            results.append({
+                "algo_name": anomaly_algo_name,
+                "external_var": external_var_name,
+                "MI": np.mean(external_var_scores)
+            })
+
+    return pd.DataFrame(results)

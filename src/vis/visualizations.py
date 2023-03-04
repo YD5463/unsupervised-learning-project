@@ -1,8 +1,14 @@
+import json
+
+import pandas as pd
 import scipy.cluster.hierarchy as sch
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import cm
 from sklearn.metrics import silhouette_samples
+import seaborn as sns
+
+sns.set_theme()
 
 
 def hierarchical_clustering_vis(X, ):
@@ -13,9 +19,8 @@ def hierarchical_clustering_vis(X, ):
 
 def elbow_method(X: np.ndarray, labels: np.ndarray, n_clusters: int):
     sample_silhouette_values = silhouette_samples(X, labels)
-    silhouette_avg = np.mean(sample_silhouette_values)
-
     y_lower = 10
+    plt.figure(figsize=(15, 8))
     for i in range(n_clusters):
         ith_cluster_silhouette_values = sample_silhouette_values[labels == i]
         ith_cluster_silhouette_values.sort()
@@ -40,8 +45,8 @@ def elbow_method(X: np.ndarray, labels: np.ndarray, n_clusters: int):
     plt.xlabel("The silhouette coefficient values")
     plt.ylabel("Cluster label")
 
-    plt.axvline(x=silhouette_avg, color="red", linestyle="--")
     plt.yticks([])
+    plt.savefig("elbow.png")
 
 
 # def reduce_dimension(X):
@@ -53,3 +58,46 @@ def elbow_method(X: np.ndarray, labels: np.ndarray, n_clusters: int):
 #         axs[i].scatter(X_embedded_tsne[:, 0], X_embedded_tsne[:, 1], s=40, cmap='viridis')
 #         axs[i].set_title(f"{model} dimensionality reduction")
 #     plt.show()
+
+def anomaly_external_var_to_mi(df):
+    g = sns.catplot(
+        data=df, kind="bar",
+        x="external_var", y="MI", hue="algo_name",
+        errorbar="sd", palette="dark", alpha=.6, height=6
+    )
+    g.despine(left=True)
+    g.set_axis_labels("External Variable", "Mutual Information")
+    g.legend.set_title("Anomaly MI Per External Var")
+    plt.savefig("anomaly_external_var_to_mi.png")
+
+
+def plot_silhouette():
+    with open("./reports/without_anomaly_algo/silout_per_clustreing.json", "r") as file:
+        without_anomaly_algo_scores = json.load(file)
+    with open("./reports/with_anomaly_algo/sillout_pre_clustering.json", "r") as file:
+        with_anomaly_algo_scores = json.load(file)
+    rows = []
+    for key, scores in without_anomaly_algo_scores.items():
+        for score in scores:
+            rows.append({
+                "Clustering Algorithm": key.replace("_", " ").title(),
+                "score": score,
+                "With Anomaly Filtering": "No"
+            })
+    for key, scores in with_anomaly_algo_scores.items():
+        for score in scores:
+            rows.append({
+                "Clustering Algorithm": key.replace("_", " ").title(),
+                "score": score,
+                "With Anomaly Filtering": "Yes"
+            })
+    df = pd.DataFrame(rows)
+    plt.figure(figsize=(15, 8))
+    g = sns.barplot(
+        data=df, x="Clustering Algorithm", y="score",
+        hue="With Anomaly Filtering", errorbar="sd",  palette="dark", alpha=.6,
+    )
+    g.set_ylabel("Silhouette Scores")
+    g.set_xlabel("")
+    g.set_title("Silhouette Scores By Algorithm")
+    plt.savefig("static_silhouettes.png")
