@@ -1,28 +1,28 @@
 import json
 import os
+import random
 from collections import defaultdict
-from typing import Dict, Any, List, Tuple
+from typing import Dict, Any, List
 
 import numpy as np
 import pandas as pd
 from hmmlearn.hmm import CategoricalHMM
-from sklearn.metrics import normalized_mutual_info_score, mutual_info_score
+from sklearn.metrics import normalized_mutual_info_score, mutual_info_score, silhouette_score
 
 from src.flows_utils.algorithms import dim_reduction_algorithms, clustering_algorithms
-from src.flows_utils.utils import reduction_algo_wrapper, find_best_algo, generate_cvs
-from src.static import dimentions_options, num_clusters_options
+from src.flows_utils.utils import reduction_algo_wrapper, find_best_algo, generate_cvs, external_var_to_anomalies
 from pathlib import Path
 
+from src.vis.visualizations import anomaly_external_var_to_mi
 
-CACHE_PATH = "cache-dynamic/"
+CACHE_PATH = "cache-dynamic-new/"
 Path(CACHE_PATH).mkdir(parents=True, exist_ok=True)
 EXTERNAL_VARS = ["gas_type", "concentration"]
-DIMENTIONS_OPTIONS = [10, 50, 100]
-NUM_CLUSTERS_OPTIONS = [2, 4, 8, 12, 16, 20]
-NUM_OF_CVS = 5
-CV_SIZE = 2600
+DIMENTIONS_OPTIONS = [2, 10]
+NUM_CLUSTERS_OPTIONS = [2, 6, 12, 20]
+NUM_OF_CVS = 3
+# CV_SIZE = 2600
 DATA_PATH = "data/driftdataset"
-
 
 
 def load_dynamic_dataset():
@@ -48,51 +48,56 @@ def load_dynamic_dataset():
             y["concentration"] = y["concentration"].apply(lambda val: int(float(val)))
             X_cvs.append(X)
             y_cvs.append(y)
-
-    cvs = [[0, 1, 2, 3, 6], [7, 8], [4], [5], [9]]
-    lengths = [[X_cvs[i].shape[0] for i in cv] for cv in cvs]
-    X_cvs = [np.concatenate([X_cvs[i] for i in cv]) for cv in cvs]
-    y_cvs = [pd.concat([y_cvs[i] for i in cv]) for cv in cvs]
-    return X_cvs, y_cvs, lengths
+    return X_cvs, y_cvs
 
 
-def update_scores(labels: np.ndarray, cv_y: pd.DataFrame, scores: Dict[str, List[float]], lengths):
-    model = CategoricalHMM(n_components=cv_y["gas_type"].nunique()).fit(labels.reshape(-1, 1), lengths)
+def update_scores(labels: np.ndarray, cv_data, cv_y: pd.DataFrame,lengths, scores: Dict[str, List[float]]):
+    sil_score = silhouette_score(cv_data, labels)
+    model = CategoricalHMM(n_components=cv_y["gas_type"].nunique()).fit(labels.reshape(-1, 1), lengths=lengths)
     hidden_states_gas_type = model.predict(labels.reshape(-1, 1))
     mi_gas_type_mi = normalized_mutual_info_score(
         cv_y["gas_type"].values,
         hidden_states_gas_type
     )
-    model = CategoricalHMM(n_components=cv_y["concentration"].nunique()).fit(labels.reshape(-1, 1), lengths)
+    model = CategoricalHMM(n_components=cv_y["concentration"].nunique()).fit(labels.reshape(-1, 1), lengths=lengths)
     hidden_states_concentration = model.predict(labels.reshape(-1, 1))
     mi_concentration = normalized_mutual_info_score(
-        cv_y["gas_type"].values,
+        cv_y["concentration"].values,
         hidden_states_concentration
     )
     scores["mi_concentration_scores"].append(mi_concentration)
     scores["mi_gas_type_scores"].append(mi_gas_type_mi)
     scores["weighted_scores"].append(
-        (mi_concentration + mi_gas_type_mi) / 2
+        (mi_concentration + mi_gas_type_mi + (sil_score + 1) / 2) / 2
     )
     return scores
 
 
 def main():
-    X_cvs, y_cvs, lengths = load_dynamic_dataset()
+    X_cvs, y_cvs = load_dynamic_dataset()
     best_config_by_clustering = dict()
     for clustering_algo_name in clustering_algorithms.keys():
         dim_reduction_meta: Dict[str, Dict[str, Any]] = dict()
         for reduction_algo_name in dim_reduction_algorithms.keys():
             max_score = float("-inf")
-            for dim_num in dimentions_options:
-                for k_clusters in num_clusters_options:
+            for dim_num in DIMENTIONS_OPTIONS:
+                for k_clusters in NUM_CLUSTERS_OPTIONS:
                     scores = defaultdict(list)
-                    for cv_id, (cv_data, cv_y, length) in enumerate(zip(X_cvs, y_cvs, lengths)):
+                    for cv_id in range(NUM_OF_CVS):
+                        in_index = [
+                            random.randint(0, 9),
+                            random.randint(0, 9),
+                            random.randint(0, 9),
+                            random.randint(0, 9)
+                        ]
+                        cv_data = np.concatenate([X_cvs[i] for i in range(len(X_cvs)) if i in in_index])
+                        cv_y = pd.concat([y_cvs[i] for i in range(len(y_cvs)) if i in in_index])
+                        lengths = [X_cvs[i].shape[0] for i in range(len(X_cvs)) if i in in_index]
                         try:
                             cv_data = reduction_algo_wrapper(reduction_algo_name, dim_num, cv_data, cv_id, CACHE_PATH)
                             print(f"doing {clustering_algo_name} for {cv_data.shape} by {reduction_algo_name}")
                             labels = clustering_algorithms[clustering_algo_name](k_clusters, cv_data)
-                            scores = update_scores(labels, cv_y, scores, length)
+                            scores = update_scores(labels, cv_data, cv_y, lengths, scores)
                         except Exception as e:
                             print(e)
                             break
@@ -177,5 +182,19 @@ def best_config_by(key: str, best_config_by_clustering: Dict):
         json.dump(result, file)
 
 
+def main2():
+    X_cvs, y_cvs = load_dynamic_dataset()
+    df = external_var_to_anomalies(X_cvs, y_cvs, EXTERNAL_VARS)
+    anomaly_external_var_to_mi(df)
+    print(df)
+
+
+# def main3():
+#     X_cvs, y_cvs, lengths = load_dynamic_dataset()
+#     X, y = X_cvs[0], y_cvs[0]
+#
+
 if __name__ == '__main__':
     main()
+    # main3()
+
