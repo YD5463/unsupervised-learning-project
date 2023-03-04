@@ -6,9 +6,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pandas as pd
-from sklearn.manifold import TSNE
+from sklearn.manifold import TSNE, LocallyLinearEmbedding
+from umap import UMAP
 
-from src.flows_utils.algorithms import clustering_algorithms, dim_reduction_algorithms, anomaly_detection_algorithms
+from src.flows_utils.algorithms import clustering_algorithms, dim_reduction_algorithms, anomaly_detection_algorithms, \
+    hierarchical_clustering
 from sklearn.metrics import mutual_info_score
 from sklearn.preprocessing import MinMaxScaler
 import warnings
@@ -72,7 +74,7 @@ def find_best_config_by_clustering(X_cvs: List[np.ndarray]) -> Dict[str, Dict[st
                             "scores": scores,
                             "reduction_algo_name": reduction_algo_name
                         }
-        best_algo_name, p_value, t_test_p_value = find_best_algo(dim_reduction_scores)
+        best_algo_name, p_value, t_test_p_value, msg = find_best_algo(dim_reduction_scores)
         best_config_by_clustering[clustering_algo_name] = dim_reduction_meta[best_algo_name]
         print(f"picking for {clustering_algo_name}: {best_config_by_clustering[clustering_algo_name]}")
     return best_config_by_clustering
@@ -101,7 +103,7 @@ def find_best_cluster_algo_per_external_var(X_cvs: List[np.ndarray], y_cvs: List
                     print(e)
                     scores.append(-1)
             all_mi[clustering_algo_name] = scores
-        best_algo_name, p_value, t_test_p_value = find_best_algo(all_mi)
+        best_algo_name, p_value, t_test_p_value, msg = find_best_algo(all_mi)
         best_cluster_algo_per_external_var[external_var_name] = {
             "algo_name": best_algo_name,
             "scores": all_mi[best_algo_name]
@@ -134,7 +136,7 @@ def find_best_external_var_per_clustering(X_cvs: List[np.ndarray], y_cvs: List[p
                     print(e)
                     scores.append(-1)
             all_mi[external_var_name] = scores
-        best_var, p_value, t_test_p_value = find_best_algo(all_mi)
+        best_var, p_value, t_test_p_value, msg = find_best_algo(all_mi)
         best_external_var_per_clustering[clustering_algo_name] = {
             "scores": all_mi[best_var],
             "best_var": best_var,
@@ -208,11 +210,12 @@ def plot_stuff():
     rows = np.random.randint(X.shape[0], size=1000)
     X = X[rows, :]
     y = y.iloc[rows]
-    labels = clustering_algorithms["hierarchical_clustering"](
+    X = LocallyLinearEmbedding(n_components=10, n_jobs=-1).fit_transform(X)
+    X = UMAP(n_neighbors=100, n_components=2, n_epochs=1000, init='spectral', low_memory=False, verbose=False).fit_transform(X)
+    labels = hierarchical_clustering(
         n_clusters,
-        dim_reduction_algorithms["LLE"](10).fit_transform(X)
+        X
     )
-    X = TSNE(n_components=2).fit_transform(X)
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 8))
     ax1.scatter(X[:, 0], X[:, 1], c=labels)
     ax2.scatter(X[:, 0], X[:, 1], c=y[external_var].values)
