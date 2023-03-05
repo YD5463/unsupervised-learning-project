@@ -38,7 +38,7 @@ def elbow_method(X: np.ndarray, labels: np.ndarray, n_clusters: int):
             alpha=0.7,
         )
         # TODO: legend instead of text
-        plt.text(-0.05, y_lower + 0.5 * size_cluster_i, str(i))
+        # plt.text(-0.05, y_lower + 0.5 * size_cluster_i, str(i))
         y_lower = y_upper + 10
 
     plt.title("The silhouette plot for the various clusters.")
@@ -60,6 +60,7 @@ def elbow_method(X: np.ndarray, labels: np.ndarray, n_clusters: int):
 #     plt.show()
 
 def anomaly_external_var_to_mi(df):
+    sns.set(rc={'figure.figsize':(6,6)})
     g = sns.catplot(
         data=df, kind="bar",
         x="external_var", y="MI", hue="algo_name",
@@ -67,7 +68,7 @@ def anomaly_external_var_to_mi(df):
     )
     g.despine(left=True)
     g.set_axis_labels("External Variable", "Mutual Information")
-    g.legend.set_title("Anomaly MI Per External Var")
+    g.legend.set_title("")
     plt.savefig("anomaly_external_var_to_mi.png")
 
 
@@ -101,3 +102,26 @@ def plot_silhouette():
     g.set_xlabel("")
     g.set_title("Silhouette Scores By Algorithm")
     plt.savefig("static_silhouettes.png")
+
+
+def plot_mi_dynamic():
+    with open("./reports/dynamic/final_result_weighted_scores.json", "r") as file:
+        final_result_weighted_scores = json.load(file)
+    final_result_weighted_scores = final_result_weighted_scores["all_config"]
+    rows = []
+    for key, scores in final_result_weighted_scores.items():
+        for score in scores["weighted_scores"]:
+            rows.append({
+                "Clustering Algorithm": key.replace("_", " ").title(),
+                "score": score,
+            })
+    df = pd.DataFrame(rows)
+    plt.figure(figsize=(15, 8))
+    g = sns.barplot(
+        data=df, x="Clustering Algorithm", y="score",
+        errorbar="sd",  palette="dark", alpha=.6,
+    )
+    g.set_ylabel("MI Scores")
+    g.set_xlabel("")
+    g.set_title("MI Scores By Algorithm")
+    plt.savefig("mi_dynamic.png")

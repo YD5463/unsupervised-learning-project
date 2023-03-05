@@ -7,14 +7,19 @@ from typing import Dict, Any, List
 import numpy as np
 import pandas as pd
 from hmmlearn.hmm import CategoricalHMM
+from matplotlib import pyplot as plt
+from sklearn.manifold import LocallyLinearEmbedding, MDS
 from sklearn.metrics import normalized_mutual_info_score, mutual_info_score, silhouette_score
 from tqdm import tqdm
+import seaborn as sns
+from umap import UMAP
 
-from src.flows_utils.algorithms import dim_reduction_algorithms, clustering_algorithms, anomaly_detection_algorithms
+from src.flows_utils.algorithms import dim_reduction_algorithms, clustering_algorithms, anomaly_detection_algorithms, \
+    hierarchical_clustering
 from src.flows_utils.utils import reduction_algo_wrapper, find_best_algo
 from pathlib import Path
 
-from src.vis.visualizations import anomaly_external_var_to_mi
+from src.vis.visualizations import anomaly_external_var_to_mi, elbow_method
 
 CACHE_PATH = "cache-dynamic-new/"
 Path(CACHE_PATH).mkdir(parents=True, exist_ok=True)
@@ -209,6 +214,7 @@ def external_var_to_anomalies(X_cvs, y_cvs, external_vars):
             cv_y = pd.concat([y_cvs[i] for i in range(len(y_cvs)) if i in in_index])
             lengths = [X_cvs[i].shape[0] for i in range(len(X_cvs)) if i in in_index]
             labels = anomaly_algo.fit_predict(cv_data)
+            labels[labels == -1] = 0
             for external_var_name in external_vars:
                 model = CategoricalHMM(n_components=cv_y[external_var_name].nunique()).fit(
                     labels.reshape(-1, 1),
@@ -232,18 +238,51 @@ def external_var_to_anomalies(X_cvs, y_cvs, external_vars):
     return pd.DataFrame(results)
 
 
-def main2():
-    X_cvs, y_cvs = load_dynamic_dataset()
-    df = external_var_to_anomalies(X_cvs, y_cvs, EXTERNAL_VARS)
+def plot_mi_to_anomaly():
+    # X_cvs, y_cvs = load_dynamic_dataset()
+    # df = external_var_to_anomalies(X_cvs, y_cvs, EXTERNAL_VARS)
+    # df.to_csv("save.csv")
+    df = pd.read_csv("save.csv")
     anomaly_external_var_to_mi(df)
     print(df)
 
 
-# def main3():
-#     X_cvs, y_cvs, lengths = load_dynamic_dataset()
-#     X, y = X_cvs[0], y_cvs[0]
-#
+def plot_stuff():
+    X_cvs, y_cvs = load_dynamic_dataset()
+    in_index = cvs[0]
+    X = np.concatenate([X_cvs[i] for i in range(len(X_cvs)) if i in in_index])
+    y = pd.concat([y_cvs[i] for i in range(len(y_cvs)) if i in in_index])
+    lengths = [X_cvs[i].shape[0] for i in range(len(X_cvs)) if i in in_index]
+    external_var = "concentration"
+    n_clusters = y[external_var].nunique()
+    labels = hierarchical_clustering(
+        n_clusters,
+        MDS(n_components=10, n_jobs=-1).fit_transform(X)
+    )
+    model = CategoricalHMM(
+        n_components=y[external_var].nunique()
+    ).fit(
+        labels.reshape(-1, 1),
+        lengths=lengths
+    )
+    labels = model.predict(labels.reshape(-1, 1))
+    y_true = y[external_var].values
+    # y_true = most_similar_permutation(y_true, labels)
+    elbow_method(X, labels, n_clusters)
+    # X = UMAP(
+    #     n_neighbors=100, n_components=2,
+    #     n_epochs=1000, init='spectral',
+    #     low_memory=False, verbose=False
+    # ).fit_transform(X)
+    # fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 8))
+    # ax1.scatter(X[:, 0], X[:, 1], c=labels)
+    # ax2.scatter(X[:, 0], X[:, 1], c=y_true)
+    # plt.savefig("static_clustering_hierarchical_clustering_genre_top.png")
+    # plt.show()
+
 
 if __name__ == '__main__':
-    main2()
+    plot_stuff()
+    # main2()
     # main3()
+

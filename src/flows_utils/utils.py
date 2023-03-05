@@ -35,7 +35,11 @@ def get_silhouette_scores(
     return scores
 
 
-def reduction_algo_wrapper(reduction_algo_name: str, dim_num: int, cv_data: np.ndarray, cv_id: int, CACHE_PATH) -> np.ndarray:
+def reduction_algo_wrapper(
+        reduction_algo_name: str,
+        dim_num: int, cv_data: np.ndarray,
+        cv_id: int, CACHE_PATH
+) -> np.ndarray:
     reduction_algo = dim_reduction_algorithms[reduction_algo_name]
     if reduction_algo is None:
         return cv_data

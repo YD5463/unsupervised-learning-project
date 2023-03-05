@@ -77,13 +77,13 @@ clustering_algorithms = {
 
 dim_reduction_algorithms = {
     "MDS": lambda k: MDS(n_components=k, n_jobs=-1, max_iter=300),
-    # "PCA": lambda k: PCA(n_components=k),
-    # "FastICA": lambda k: FastICA(n_components=k, max_iter=200),
+    "PCA": lambda k: PCA(n_components=k),
+    "FastICA": lambda k: FastICA(n_components=k, max_iter=200),
     "without_reduction": None,
-    # "Isomap": lambda k: Isomap(n_components=k, n_jobs=-1, max_iter=200),
-    # "SpectralEmbedding": lambda k: SpectralEmbedding(n_components=k, n_jobs=-1),
-    # "LLE": lambda k: LocallyLinearEmbedding(n_components=k, n_jobs=-1),
-    # "UMAP": lambda k: UMAP(n_neighbors=100, n_components=k, n_epochs=1000, init='spectral', low_memory=False, verbose=False)
+    "Isomap": lambda k: Isomap(n_components=k, n_jobs=-1, max_iter=200),
+    "SpectralEmbedding": lambda k: SpectralEmbedding(n_components=k, n_jobs=-1),
+    "LLE": lambda k: LocallyLinearEmbedding(n_components=k, n_jobs=-1),
+    "UMAP": lambda k: UMAP(n_neighbors=100, n_components=k, n_epochs=1000, init='spectral', low_memory=False, verbose=False)
 }
 
 anomaly_detection_algorithms = {
