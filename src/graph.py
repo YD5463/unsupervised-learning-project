@@ -1,33 +1,32 @@
 import json
 import os
-import pickle
+import warnings
+from collections import defaultdict
 from typing import Dict
 
 import numpy as np
 import pandas as pd
 import networkx as nx
-from community import community_louvain
-from sklearn.cluster import KMeans
+from matplotlib import pyplot as plt
 from sklearn.decomposition import PCA
-from sklearn.metrics import silhouette_score, normalized_mutual_info_score, mutual_info_score
+from sklearn.metrics import normalized_mutual_info_score
 from tqdm import tqdm
-from karateclub.graph_embedding import Graph2Vec
-
-from src.flows_utils.algorithms import clustering_algorithms, hierarchical_clustering
-from src.flows_utils.utils import generate_cvs
-from src.static import find_best_algo
+from scipy.sparse import csgraph
+import seaborn as sns
 from sklearn.metrics import silhouette_score
-from sknetwork.embedding import LouvainEmbedding, LouvainNE
 
+from src.flows_utils.algorithms import anomaly_detection_algorithms, clustering_algorithms
+from src.flows_utils.utils import find_best_algo, generate_cvs
+
+warnings.filterwarnings("ignore")
 DATA_PATH = "data/deezer_ego_nets"
-DIMENTIONS_OPTIONS = [10, 50, 100]
-NUM_CLUSTERS_OPTIONS = [2, 4, 8, 12, 16, 20]
+NUM_CLUSTERS_OPTIONS = [2, 10, 50, 100, 500]
 NUM_OF_CVS = 5
 CV_SIZE = 2000
 p_value_thr = 0.05
 
 
-def preprocess_data():
+def load_graph():
     graphs = []
     with open(os.path.join(DATA_PATH, "deezer_edges.json")) as f:
         graphs_dict: Dict = json.load(f)
@@ -37,97 +36,101 @@ def preprocess_data():
             curr_graph.add_edge(u, v)
         graphs.append(curr_graph)
     return graphs
-    # adj_matrix = np.zeros((n, n))
-    # for i in range(n):
-    #     for _, edge in graph_dict[str(i)]:
-    #         adj_matrix[i, edge] = 1
-    # data = PCA(n_components=0.98).fit_transform(adj_matrix)
-    # with open("data.pkl", "wb") as file:
-    #     pickle.dump(data, file)
-    # return data
 
 
-def main_flow():
-    with open("data.pkl", "rb") as file:
-        data = pickle.load(file)
-    print(data.shape)
-    target = pd.read_csv(os.path.join(DATA_PATH, "deezer_target.csv"))["target"]
-    X_cvs, y_cvs = generate_cvs(data, target, NUM_OF_CVS, CV_SIZE)
-    best_config_by_clustering = dict()
-    for clustering_algo_name in clustering_algorithms.keys():
-        scores_by_k = dict()
-        for k_clusters in NUM_CLUSTERS_OPTIONS:
-            silhouette_scores = []
-            mi_scores = []
-            scores = []
-            for cv_id, (cv_data, cv_y) in enumerate(zip(X_cvs, y_cvs)):
-                try:
-                    labels = clustering_algorithms[clustering_algo_name](k_clusters, cv_data)
-                    sil_score = silhouette_score(cv_data[labels != -1], labels[labels != -1])
-                    silhouette_scores.append(sil_score)
-                    sil_score = (sil_score + 1) / 2  # normalize between 0 and 1
-                    mi_score = normalized_mutual_info_score(labels, cv_y.values)
-                    scores.append((sil_score + mi_score) / 2)
-                    mi_scores.append(mutual_info_score(labels, cv_y.values))
-                except Exception as e:
-                    print(e)
-                    break
-            scores_by_k[k_clusters] = {
-                "scores": scores,
-                "mi_scores": mi_scores,
-                "silhouette_scores": silhouette_scores
-            }
-        best_k_clusters, p_value, t_test_p_value, msg = find_best_algo({
-            key: value["scores"] for key, value in scores_by_k.items()
-        })
-        best_config_by_clustering[clustering_algo_name] = {
-            **scores_by_k[best_k_clusters],
-            "best_k_clusters": best_k_clusters,
-            "annova": p_value,
-            "t_test_p_value": t_test_p_value
-        }
-        print(f"picking for {clustering_algo_name}: {best_k_clusters}")
-    print(best_config_by_clustering)
-    # with open("best_config_by_clustering.json") as file:
-    #     json.dump(best_config_by_clustering, file)
-    clustering_scores = dict()
-    for clustering_algo_name, metadata in best_config_by_clustering.items():
-        clustering_scores[clustering_algo_name] = metadata["scores"]
-    best_k_clusters, p_value, t_test_p_value, msg = find_best_algo(clustering_scores)
-    print(f"best_k_clusters: {best_k_clusters}")
-    print(f"annova: {p_value}")
-    print(f"t test: {t_test_p_value}")
+def preprocess() -> np.ndarray:
+    graphs = load_graph()
+    results = []
+    max_size = 0
+    pca = PCA(n_components=2)
+    for graph in tqdm(graphs):
+        laplacian = csgraph.laplacian(nx.adjacency_matrix(graph), normed=True).toarray()
+        eigenvalues, eigenvectors = np.linalg.eig(laplacian)
+        eigenvalues = eigenvalues.real
+        eigvals_norm = np.linalg.norm(eigenvalues)
+        eigenvalues = eigenvalues / eigvals_norm
+        eigenvalues = np.sort(eigenvalues)
+        results.append(eigenvalues)
+        max_size = max(max_size, eigenvalues.shape[0])
+    for i in range(len(results)):
+        num_zeros = max_size - results[i].shape[0]
+        if num_zeros > 0:
+            results[i] = np.pad(results[i], (0, num_zeros), 'constant')
+    data = np.vstack(results)
+    data = pca.fit_transform(data)
+    return data
 
 
 def main():
-    graphs = preprocess_data()
-    target = pd.read_csv(os.path.join(DATA_PATH, "deezer_target.csv"))["target"].values
-    # louvain = LouvainEmbedding()
-    louvain = LouvainNE(n_components=10)
+    target: pd.DataFrame = pd.read_csv(os.path.join(DATA_PATH, "deezer_target.csv"))
+    data = preprocess()
+    X_cvs, y_cvs = generate_cvs(data, target, NUM_OF_CVS, CV_SIZE)
+    anomaly_scores = dict()
     results = []
-    max_size = 0
-    for graph in tqdm(graphs):
-        embedding = louvain.fit_transform(nx.adjacency_matrix(graph))
-        # embedding = louvain.fit_transform(nx.adjacency_matrix(graph))
-        embedding = embedding.mean(axis=0)
-        results.append(embedding)
-        max_size = max(max_size, embedding.shape[0])
-    # for i in range(len(results)):
-    #     num_zeros = max_size - results[i].shape[0]
-    #     if num_zeros > 0:
-    #         results[i] = np.pad(results[i], (0, num_zeros), 'constant')
-    data = np.vstack(results)
-    print("doing k means")
-    scores = []
-    for k in tqdm([2, 6, 12, 20]):
-        labels = hierarchical_clustering(k, data)
-        scores.append({
-            "silhouette_score": silhouette_score(data, labels),
-            "mutual_info_score": normalized_mutual_info_score(labels, target)
+    for anomaly_algo_name, anomaly_algo in anomaly_detection_algorithms.items():
+        print(f"-------------{anomaly_algo_name}-----------")
+        best_config_by_clustering = dict()
+        if anomaly_algo:
+            anomaly_labels = anomaly_algo.fit_predict(data)
+            data = data[anomaly_labels != -1]
+            anomaly_labels[anomaly_labels == -1] = 0
+            anomaly_scores["anomaly_algo_name"] = normalized_mutual_info_score(anomaly_labels, target)
+
+        for clustering_algo_name, clustering_algo in clustering_algorithms.items():
+            print(f"------------{clustering_algo_name}-----------")
+            scores = defaultdict(list)
+            max_score = float("-inf")
+            for k in tqdm(NUM_CLUSTERS_OPTIONS):
+                for cv_data, cv_y_true in zip(X_cvs, y_cvs):
+                    try:
+                        labels = clustering_algo(k, cv_data)
+                        sil_score = silhouette_score(cv_data, labels)
+                        mi_score = normalized_mutual_info_score(labels, cv_y_true["target"].values)
+                        scores["silhouette_scores"].append(sil_score)
+                        scores["mutual_information_scores"].append(mi_score)
+                        scores["weighted_score"].append((mi_score + (sil_score + 1) / 2))
+                    except Exception as e:
+                        print(e)
+                        break
+                avg_score = np.mean(scores["weighted_scores"])
+                if avg_score > max_score:
+                    max_score = avg_score
+                    best_config_by_clustering[clustering_algo_name] = {
+                        "avg_score": avg_score,
+                        "k": k,
+                        **scores
+                    }
+        best_algo, p_value, t_test_p_value, msg = find_best_algo({
+            key: value["weighted_scores"] for key, value in best_config_by_clustering.items()
         })
-    print(scores)
+        print(best_config_by_clustering)
+        results.append({
+            "algo_name": anomaly_algo_name,
+            "best_config": best_config_by_clustering[best_algo],
+            "annova": p_value,
+            "t-test": t_test_p_value,
+            "msg": msg
+        })
+    print("------------------------")
+    print(results)
+    df = pd.DataFrame(results)
+    df.to_csv("results.csv")
+    plot_results(df, "weighted_scores")
+    plot_results(df, "mutual_information_scores")
+    plot_results(df, "silhouette_scores")
+
+
+def plot_results(df: pd.DataFrame, metric_name: str):
+    plt.figure(figsize=(15, 8))
+    g = sns.barplot(
+        data=df, x="algo_name", y=metric_name,
+        hue="Anomaly Detector", errorbar="sd",  palette="dark", alpha=.6,
+    )
+    g.set_ylabel(metric_name.replace("_", " ").title())
+    g.set_xlabel("")
+    plt.savefig(f"graph_{metric_name}.png")
 
 
 if __name__ == '__main__':
     main()
-    # main_flow()
+
