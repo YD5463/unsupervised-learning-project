@@ -84,7 +84,7 @@ def update_scores(labels: np.ndarray, cv_data, cv_y: pd.DataFrame, lengths, scor
     scores["mi_concentration_scores"].append(mi_concentration)
     scores["mi_gas_type_scores"].append(mi_gas_type_mi)
     scores["weighted_scores"].append(
-        (mi_concentration + mi_gas_type_mi + (sil_score + 1) / 2) / 2
+        (mi_concentration + mi_gas_type_mi + (sil_score + 1) / 2) / 3
     )
     return scores
 
